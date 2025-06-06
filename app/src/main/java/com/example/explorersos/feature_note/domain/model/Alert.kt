@@ -10,7 +10,7 @@ data class Alert(
     val alertHoursAfter: Int = 24,
     val alertInstructions: String,
     val alertOrder: List<ContactMethod>,
-    val recipients: List<AlertRecipient>,
+    val recipientsId: List<Int>,
 )
 
 class invalidAlertException(message: String): Exception(message)
