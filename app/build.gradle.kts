@@ -41,11 +41,13 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.room.common.jvm)
     // Unit Testing
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.koin.test.junit4)
+    testImplementation(libs.junit.jupiter)
 
     // Android Testing
     androidTestImplementation(libs.androidx.junit.v121)
