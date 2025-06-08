@@ -42,6 +42,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.room.common.jvm)
+    implementation(libs.androidx.room.runtime.android)
     // Unit Testing
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
