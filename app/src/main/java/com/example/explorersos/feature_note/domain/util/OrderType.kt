@@ -1,4 +1,6 @@
 package com.example.explorersos.feature_note.domain.util
 
-class OrderType {
+sealed class OrderType {
+    object Ascending : OrderType()
+    object Descending : OrderType()
 }
