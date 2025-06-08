@@ -1,4 +1,14 @@
 package com.example.explorersos.feature_note.domain.use_case
 
-class GetTrip {
+import com.example.explorersos.feature_note.domain.model.Trip
+import com.example.explorersos.feature_note.domain.respository.TripRepository
+
+class GetTrip(
+    private val repository: TripRepository
+
+) {
+    suspend operator fun invoke(id: Int): Trip? {
+        return repository.getTripById(id)
+    }
+
 }
