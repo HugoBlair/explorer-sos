@@ -1,10 +1,10 @@
 package com.example.explorersos.feature_note.domain.model
 
 import com.example.explorersos.feature_note.domain.util.ContactMethod
-import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class AlertTest {
 
