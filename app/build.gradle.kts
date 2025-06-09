@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
-
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
 android {
     namespace = "com.example.explorersos"
     compileSdk = 35
@@ -37,24 +39,54 @@ android {
     buildFeatures {
         compose = true
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/LICENSE-notice.md" // Specifically for your case
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+        }
+    }
 }
 
 dependencies {
+    val koin_version = "4.0.4"
+    val koin_android_version = "4.0.4"
+    // Koin for Kotlin apps
+    implementation(project.dependencies.platform("io.insert-koin:koin-bom:$koin_version"))
+    implementation("io.insert-koin:koin-core")
+    // Koin Test features
+    testImplementation("io.insert-koin:koin-test:$koin_version")
+    // Koin for JUnit 4
+    testImplementation("io.insert-koin:koin-test-junit4:$koin_version")
+    // Koin for JUnit 5
+    testImplementation("io.insert-koin:koin-test-junit5:$koin_version")
 
+    implementation("io.insert-koin:koin-android:$koin_android_version")
+    implementation("io.insert-koin:koin-androidx-compose:$koin_version")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:$koin_version")
+
+
+
+    testImplementation(libs.junit.jupiter.api.v5130)
+    testImplementation(libs.kotlinx.coroutines.test.v1102)
+    androidTestImplementation(libs.androidx.core)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2") // Use latest stable
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.2")
+
+
+    implementation(libs.core.ktx)
+
+    //Room local db
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.room.runtime.android)
-    // Unit Testing
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.koin.test.junit4)
-    testImplementation(libs.junit.jupiter)
 
-    // Android Testing
-    androidTestImplementation(libs.androidx.junit.v121)
-    androidTestImplementation(libs.androidx.espresso.core.v361)
-    androidTestImplementation(libs.ui.test.junit4)
-    androidTestImplementation(libs.androidx.room.testing)
+    //Mocking
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 
 
     implementation(libs.androidx.core.ktx)
@@ -65,11 +97,18 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // AndroidX Test - Instrumented testing
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.runner)
+
+    // Coroutines testing
+    androidTestImplementation(libs.kotlinx.coroutines.test.v171)
+
+    // Room testing
+    androidTestImplementation(libs.androidx.room.testing)
+
 }

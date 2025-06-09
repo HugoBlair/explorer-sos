@@ -1,4 +1,4 @@
-package com.example.explorersos.feature_note.domain.respository
+package com.example.explorersos.feature_note.domain.repository
 
 import com.example.explorersos.feature_note.domain.model.Trip
 import kotlinx.coroutines.flow.Flow

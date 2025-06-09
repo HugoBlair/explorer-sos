@@ -8,8 +8,10 @@ import com.example.explorersos.feature_note.domain.model.Trip
 
 @Database(
     entities = [Trip::class, Alert::class, AlertRecipient::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
+
 abstract class TripDatabase : RoomDatabase() {
     abstract val tripDao: TripDao
 

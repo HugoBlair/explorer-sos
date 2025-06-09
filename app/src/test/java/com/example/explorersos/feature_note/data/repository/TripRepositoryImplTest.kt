@@ -2,7 +2,7 @@ package com.example.explorersos.feature_note.data.repository
 
 import com.example.explorersos.feature_note.data.data_source.TripDao
 import com.example.explorersos.feature_note.domain.model.Trip
-import com.example.explorersos.feature_note.domain.respository.TripRepository
+import com.example.explorersos.feature_note.domain.repository.TripRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
