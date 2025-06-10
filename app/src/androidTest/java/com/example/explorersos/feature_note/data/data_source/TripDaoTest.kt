@@ -15,17 +15,16 @@ import org.junit.Test // Import JUnit 4
 import org.junit.runner.RunWith // Import RunWith
 import java.io.IOException
 
-@RunWith(AndroidJUnit4::class) // <-- IMPORTANT: Tell the system to use the Android Test Runner
+@RunWith(AndroidJUnit4::class)
 class TripDaoTest {
 
     private lateinit var tripDao: TripDao
     private lateinit var db: TripDatabase
 
-    @Before // <-- CHANGED from @BeforeEach
+    @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, TripDatabase::class.java)
-            // Allowing main thread queries, just for testing.
             .allowMainThreadQueries()
             .build()
         tripDao = db.tripDao
@@ -59,7 +58,7 @@ class TripDaoTest {
         assertEquals(
             trip,
             retrievedTrip
-        ) // <-- CHANGED from assertEquals(retrievedTrip, trip) for better failure messages
+        )
     }
 
     @Test
