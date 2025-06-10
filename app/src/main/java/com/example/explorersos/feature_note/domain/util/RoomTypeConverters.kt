@@ -2,7 +2,7 @@ package com.example.explorersos.feature_note.domain.util
 
 import androidx.room.TypeConverter
 
-class TypeConverters {
+class RoomTypeConverters {
     @TypeConverter
     fun toContactMethodList(value: List<ContactMethod>): String {
         return value.joinToString(",") { it.name }
