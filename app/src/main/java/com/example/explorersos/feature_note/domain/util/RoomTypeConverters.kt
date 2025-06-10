@@ -10,8 +10,8 @@ class RoomTypeConverters {
 
     @TypeConverter
     fun fromContactMethodList(value: String): List<ContactMethod> {
-        return value.split(",").map { ContactMethod.valueOf(it) }
-
+        if (value.isBlank()) return emptyList()
+        return value.split(",").map { ContactMethod.valueOf(it.trim()) }
     }
 
     @TypeConverter
@@ -21,6 +21,9 @@ class RoomTypeConverters {
 
     @TypeConverter
     fun fromIntList(value: String): List<Int> {
-        return value.split(",").map { it.toInt() }
+        if (value.isBlank()) return emptyList()
+        return value.split(",").map { it.trim().toInt() }
     }
 }
+
+
