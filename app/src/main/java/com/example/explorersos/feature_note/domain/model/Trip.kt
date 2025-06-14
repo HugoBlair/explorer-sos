@@ -2,6 +2,7 @@ package com.example.explorersos.feature_note.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.ZonedDateTime
 
 @Entity
 data class Trip(
@@ -14,7 +15,7 @@ data class Trip(
     val description: String = "I am ${if (isActive) "currently on" else "planning"}" +
             " the \"$title\" trip to $destination. I am planning to leave on $startDate" +
             " and return on $endDate.",
-    val createdAt: Long = System.currentTimeMillis(),
+    val createdAt: String = ZonedDateTime.now().toString(),
     val alertId: Int? = null // FK to Alert table
 
 ) {
@@ -36,7 +37,7 @@ data class Trip(
         if (startDate > endDate) {
             throw InvalidTripException("Start date cannot be after end date.")
         }
-        if (createdAt > System.currentTimeMillis()) {
+        if (createdAt > ZonedDateTime.now().toString()) {
             throw InvalidTripException("Created at cannot be in the future.")
         }
         if (alertId != null && alertId < 0) {

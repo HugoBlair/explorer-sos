@@ -33,6 +33,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -94,7 +95,6 @@ dependencies {
     testImplementation(libs.mockk)
     androidTestImplementation(libs.mockk.android)
 
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -116,5 +116,7 @@ dependencies {
 
     // Room testing
     androidTestImplementation(libs.androidx.room.testing)
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
 }
