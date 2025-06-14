@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.explorersos.feature_note.domain.model.Trip
+import com.example.explorersos.feature_note.presentation.trips.components.TripItem
 import com.example.explorersos.ui.theme.ExplorerSOSTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,6 +25,20 @@ class MainActivity : ComponentActivity() {
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
+                    )
+                    TripItem(
+                        Trip(
+                            id = 1,
+                            title = "Big Climb",
+                            destination = "Mt Kaukau",
+                            startDate = "2025-01-01T00:00:00Z",
+                            endDate = "2025-01-02T00:00:00Z",
+                            createdAt = "2024-12-31T23:59:59Z"
+                        ),
+                        modifier = Modifier,
+                        onClick = {}
+
+
                     )
                 }
             }
