@@ -34,22 +34,21 @@ class TripRepositoryImplTest {
             Trip(
                 title = "Big Climb",
                 destination = "Mt Kaukau",
-                startDate = "01/01/2025",
-                endDate = "02/01/2025",
-                createdAt = 1L
+                startDate = "2025-01-01T08:00:00Z",
+                endDate = "2025-01-02T08:00:00Z",
+                createdAt = "2024-12-31T18:00:00Z"
             ),
             Trip(
                 title = "Ridge traverse",
                 destination = "Wainui Hill",
-                startDate = "01/01/2025",
-                endDate = "02/01/2025",
-                createdAt = 2L
+                startDate = "2025-01-01T08:00:00Z",
+                endDate = "2025-01-02T08:00:00Z",
+                createdAt = "2024-12-31T19:00:00Z"
             )
         )
         val tripsFlow = flowOf(testTrips)
         every { mockTripDao.getTrips() } returns tripsFlow
 
-        // Act: Call the repository method
         val resultFlow = tripRepository.getTrips()
         val resultList = resultFlow.first()
 
@@ -59,23 +58,20 @@ class TripRepositoryImplTest {
 
     @Test
     fun `getTripById should call dao and return correct trip`() = runTest {
-        // Arrange
         val testTrip = Trip(
             id = 1,
             title = "Test Trip",
             destination = "Test Dest",
-            startDate = "d1",
-            endDate = "d2",
-            createdAt = 1L
+            startDate = "2025-03-01T06:00:00Z",
+            endDate = "2025-03-02T06:00:00Z",
+            createdAt = "2025-02-28T12:00:00Z"
         )
         coEvery { mockTripDao.getTripById(1) } returns testTrip
         coEvery { mockTripDao.getTripById(99) } returns null
 
-        // Act
         val foundTrip = tripRepository.getTripById(1)
         val notFoundTrip = tripRepository.getTripById(99)
 
-        // Assert
         assertEquals(testTrip, foundTrip)
         assertEquals(null, notFoundTrip)
         coVerify(exactly = 1) { mockTripDao.getTripById(1) }
@@ -84,17 +80,15 @@ class TripRepositoryImplTest {
 
     @Test
     fun `insertTrip should call dao's insertTrip`() = runTest {
-        // Arrange
         val newTrip = Trip(
             title = "New Trip",
             destination = "New Dest",
-            startDate = "d1",
-            endDate = "d2",
-            createdAt = 1L
+            startDate = "2025-06-01T10:00:00Z",
+            endDate = "2025-06-02T10:00:00Z",
+            createdAt = "2025-05-30T15:00:00Z"
         )
         coEvery { mockTripDao.insertTrip(any()) } returns Unit
 
-        // Act
         tripRepository.insertTrip(newTrip)
 
         coVerify(exactly = 1) { mockTripDao.insertTrip(newTrip) }
@@ -102,21 +96,19 @@ class TripRepositoryImplTest {
 
     @Test
     fun `deleteTrip should call dao's deleteTrip`() = runTest {
-        // Arrange
         val tripToDelete = Trip(
             id = 1,
             title = "Delete Me",
             destination = "Bye",
-            startDate = "d1",
-            endDate = "d2",
-            createdAt = 1L
+            startDate = "2025-07-01T10:00:00Z",
+            endDate = "2025-07-02T10:00:00Z",
+            createdAt = "2025-06-30T12:00:00Z"
         )
         coEvery { mockTripDao.deleteTrip(any()) } returns Unit
 
-        // Act
         tripRepository.deleteTrip(tripToDelete)
 
-        // Assert
         coVerify(exactly = 1) { mockTripDao.deleteTrip(tripToDelete) }
     }
+
 }

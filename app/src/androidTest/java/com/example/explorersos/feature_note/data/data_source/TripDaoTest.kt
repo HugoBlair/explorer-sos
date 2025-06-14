@@ -3,16 +3,16 @@ package com.example.explorersos.feature_note.data.data_source
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4 // Import the runner
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.explorersos.feature_note.domain.model.Trip
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.After // Import JUnit 4
-import org.junit.Assert.assertEquals // Import JUnit 4
-import org.junit.Assert.assertTrue // Import JUnit 4
-import org.junit.Before // Import JUnit 4
-import org.junit.Test // Import JUnit 4
-import org.junit.runner.RunWith // Import RunWith
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
@@ -30,23 +30,23 @@ class TripDaoTest {
         tripDao = db.tripDao
     }
 
-    @After // <-- CHANGED from @AfterEach
+    @After
     @Throws(IOException::class)
     fun closeDb() {
         db.close()
     }
 
-    @Test // <-- No change needed here, just ensure import is org.junit.Test
+    @Test
     @Throws(Exception::class)
     fun insertTripAndGetById() = runTest {
         // Arrange
         val trip = Trip(
-            id = 1, // Explicitly set ID for easy retrieval
+            id = 1,
             title = "Big Climb",
             destination = "Mt Kaukau",
-            startDate = "01/01/2025",
-            endDate = "02/01/2025",
-            createdAt = System.currentTimeMillis()
+            startDate = "2025-01-01T00:00:00Z",
+            endDate = "2025-01-02T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
 
         // Act
@@ -55,10 +55,7 @@ class TripDaoTest {
 
         // Assert
         assertTrue(retrievedTrip != null)
-        assertEquals(
-            trip,
-            retrievedTrip
-        )
+        assertEquals(trip, retrievedTrip)
     }
 
     @Test
@@ -68,25 +65,25 @@ class TripDaoTest {
         val trip1 = Trip(
             title = "Ridge traverse",
             destination = "Wainui Hill",
-            startDate = "01/01/2025",
-            endDate = "02/01/2025",
-            createdAt = System.currentTimeMillis()
+            startDate = "2025-01-01T00:00:00Z",
+            endDate = "2025-01-02T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
         val trip2 = Trip(
             title = "Mountaineering mish",
             destination = "Mt Ruapehu",
-            startDate = "01/01/2025",
-            endDate = "02/01/2025",
-            createdAt = System.currentTimeMillis()
+            startDate = "2025-01-01T00:00:00Z",
+            endDate = "2025-01-02T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
 
         // Act
         tripDao.insertTrip(trip1)
         tripDao.insertTrip(trip2)
-        val allTrips = tripDao.getTrips().first() // Collect the first list emitted by the flow
+        val allTrips = tripDao.getTrips().first()
 
         // Assert
-        assertEquals(2, allTrips.size) // <-- CHANGED from assertTrue(allTrips.size == 2)
+        assertEquals(2, allTrips.size)
         val titles = allTrips.map { it.title }
         assertTrue(titles.contains("Ridge traverse") && titles.contains("Mountaineering mish"))
     }
@@ -99,17 +96,17 @@ class TripDaoTest {
             id = 5,
             title = "To Be Deleted",
             destination = "Nowhere",
-            startDate = "d1",
-            endDate = "d2",
-            createdAt = 1L
+            startDate = "2025-01-01T00:00:00Z",
+            endDate = "2025-01-02T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
         val tripToKeep = Trip(
             id = 6,
             title = "To Be Kept",
             destination = "Somewhere",
-            startDate = "d3",
-            endDate = "d4",
-            createdAt = 2L
+            startDate = "2025-01-03T00:00:00Z",
+            endDate = "2025-01-04T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
         tripDao.insertTrip(tripToDelete)
         tripDao.insertTrip(tripToKeep)
@@ -133,9 +130,9 @@ class TripDaoTest {
             id = 10,
             title = "Original Title",
             destination = "Original Dest",
-            startDate = "d1",
-            endDate = "d2",
-            createdAt = 1L
+            startDate = "2025-01-01T00:00:00Z",
+            endDate = "2025-01-02T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
         tripDao.insertTrip(originalTrip)
 
@@ -144,9 +141,9 @@ class TripDaoTest {
             id = 10,
             title = "Updated Title",
             destination = "Updated Dest",
-            startDate = "d3",
-            endDate = "d4",
-            createdAt = 1L
+            startDate = "2025-01-03T00:00:00Z",
+            endDate = "2025-01-04T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
         tripDao.insertTrip(updatedTrip)
         val retrievedTrip = tripDao.getTripById(10)

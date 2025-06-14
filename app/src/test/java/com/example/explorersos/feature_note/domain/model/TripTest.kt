@@ -9,26 +9,25 @@ import org.junit.jupiter.api.assertThrows
 
 class TripTest {
 
-
     @Test
     fun testTripCreationWithAllProperties() {
         val trip = Trip(
             title = "Tararua Tramp",
             destination = "Tararua Ranges",
-            startDate = "12/12/2024",
-            endDate = "12/12/2026",
+            startDate = "2024-12-12T00:00:00Z",
+            endDate = "2026-12-12T00:00:00Z",
             description = "A trip to Tararua Ranges",
-            createdAt = 123456789,
+            createdAt = "2023-11-30T12:34:56Z",
             isActive = true,
             alertId = 123456789
         )
 
         assertEquals("Tararua Tramp", trip.title)
         assertEquals("Tararua Ranges", trip.destination)
-        assertEquals("12/12/2024", trip.startDate)
-        assertEquals("12/12/2026", trip.endDate)
+        assertEquals("2024-12-12T00:00:00Z", trip.startDate)
+        assertEquals("2026-12-12T00:00:00Z", trip.endDate)
         assertEquals("A trip to Tararua Ranges", trip.description)
-        assertEquals(123456789, trip.createdAt)
+        assertEquals("2023-11-30T12:34:56Z", trip.createdAt)
         assertTrue(trip.isActive)
         assertEquals(123456789, trip.alertId)
     }
@@ -38,19 +37,19 @@ class TripTest {
         val trip = Trip(
             title = "Ridge Traverse",
             destination = "Wainui Hill",
-            startDate = "01/01/2025",
-            endDate = "02/01/2025",
-            createdAt = System.currentTimeMillis()
+            startDate = "2025-01-01T00:00:00Z",
+            endDate = "2025-01-02T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z"
         )
 
         assertEquals("Ridge Traverse", trip.title)
         assertEquals("Wainui Hill", trip.destination)
         assertEquals(
-            "I am planning the \"Ridge Traverse\" trip to Wainui Hill. I am planning to leave on 01/01/2025" +
-                    " and return on 02/01/2025.", trip.description
-        ) // Default value for trip description
-        assertFalse(trip.isActive)   // Default value for isActive
-        assertNull(trip.alertId)    // Default value for nullable Long
+            "I am planning the \"Ridge Traverse\" trip to Wainui Hill. I am planning to leave on 2025-01-01T00:00:00Z and return on 2025-01-02T00:00:00Z.",
+            trip.description
+        )
+        assertFalse(trip.isActive)
+        assertNull(trip.alertId)
     }
 
     @Test
@@ -58,32 +57,31 @@ class TripTest {
         val trip = Trip(
             title = "Ridge Traverse",
             destination = "Wainui Hill",
-            startDate = "01/01/2025",
-            endDate = "02/01/2025",
-            createdAt = System.currentTimeMillis(),
+            startDate = "2025-01-01T00:00:00Z",
+            endDate = "2025-01-02T00:00:00Z",
+            createdAt = "2024-12-31T23:59:59Z",
             isActive = true
         )
 
         assertEquals("Ridge Traverse", trip.title)
         assertEquals("Wainui Hill", trip.destination)
         assertEquals(
-            "I am currently on the \"Ridge Traverse\" trip to Wainui Hill. I am planning to leave on 01/01/2025" +
-                    " and return on 02/01/2025.", trip.description
-        ) // Default value for trip description
-        assertTrue(trip.isActive)   // Default value for isActive
-        assertNull(trip.alertId)    // Default value for nullable Long
+            "I am currently on the \"Ridge Traverse\" trip to Wainui Hill. I am planning to leave on 2025-01-01T00:00:00Z and return on 2025-01-02T00:00:00Z.",
+            trip.description
+        )
+        assertTrue(trip.isActive)
+        assertNull(trip.alertId)
     }
-
 
     @Test
     fun `test trip creation with blank title throws InvalidTripException`() {
         val exception = assertThrows<Trip.InvalidTripException> {
             Trip(
-                title = "", // Blank title
+                title = "",
                 destination = "Tararua Ranges",
-                startDate = "12/12/2024",
-                endDate = "12/12/2026",
-                createdAt = 123456789L
+                startDate = "2024-12-12T00:00:00Z",
+                endDate = "2026-12-12T00:00:00Z",
+                createdAt = "2023-11-30T12:34:56Z"
             )
         }
         assertEquals("Title cannot be blank.", exception.message)
@@ -94,15 +92,13 @@ class TripTest {
         val exception = assertThrows<Trip.InvalidTripException> {
             Trip(
                 title = "Valid Title",
-                destination = "  ", // Blank destination
-                startDate = "12/12/2024",
-                endDate = "12/12/2026",
-                createdAt = 123456789L
+                destination = "  ",
+                startDate = "2024-12-12T00:00:00Z",
+                endDate = "2026-12-12T00:00:00Z",
+                createdAt = "2023-11-30T12:34:56Z"
             )
         }
         assertEquals("Destination cannot be blank.", exception.message)
-
-
     }
 
     @Test
@@ -111,9 +107,9 @@ class TripTest {
             Trip(
                 title = "Valid Title",
                 destination = "Valid Destination",
-                startDate = "  ", // Blank start date
-                endDate = "12/12/2026",
-                createdAt = 123456789L
+                startDate = "  ",
+                endDate = "2026-12-12T00:00:00Z",
+                createdAt = "2023-11-30T12:34:56Z"
             )
         }
         assertEquals("Start date cannot be blank.", exception.message)
@@ -125,13 +121,12 @@ class TripTest {
             Trip(
                 title = "Valid Title",
                 destination = "Valid Destination",
-                startDate = "12/12/2024",
-                endDate = "  ", // Blank end date
-                createdAt = 123456789
+                startDate = "2024-12-12T00:00:00Z",
+                endDate = "  ",
+                createdAt = "2023-11-30T12:34:56Z"
             )
         }
         assertEquals("End date cannot be blank.", exception.message)
-
     }
 
     @Test
@@ -140,9 +135,9 @@ class TripTest {
             Trip(
                 title = "Valid Title",
                 destination = "Valid Destination",
-                startDate = "12/12/2025",
-                endDate = "12/12/2024", // Blank end date
-                createdAt = 123456789
+                startDate = "2025-12-12T00:00:00Z",
+                endDate = "2024-12-12T00:00:00Z",
+                createdAt = "2023-11-30T12:34:56Z"
             )
         }
         assertEquals("Start date cannot be after end date.", exception.message)
@@ -150,13 +145,15 @@ class TripTest {
 
     @Test
     fun `test trip creation with created at in the future throws InvalidTripException`() {
+        val futureTime =
+            java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC).plusSeconds(1000).toString()
         val exception = assertThrows<Trip.InvalidTripException> {
             Trip(
                 title = "Valid Title",
                 destination = "Valid Destination",
-                startDate = "12/12/2024",
-                endDate = "12/12/2026",
-                createdAt = System.currentTimeMillis() + 1000 // Created at in the future
+                startDate = "2024-12-12T00:00:00Z",
+                endDate = "2026-12-12T00:00:00Z",
+                createdAt = futureTime
             )
         }
         assertEquals("Created at cannot be in the future.", exception.message)
@@ -168,17 +165,11 @@ class TripTest {
             Trip(
                 title = "Valid Title",
                 destination = "Valid Destination",
-                startDate = "12/12/2024",
-                endDate = "12/12/2026",
-                alertId = -1 // Negative alert ID
+                startDate = "2024-12-12T00:00:00Z",
+                endDate = "2026-12-12T00:00:00Z",
+                alertId = -1
             )
         }
         assertEquals("Alert ID cannot be negative.", exception.message)
     }
-
-
 }
-
-
-
-
