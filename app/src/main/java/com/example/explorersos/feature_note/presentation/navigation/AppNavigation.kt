@@ -1,0 +1,3 @@
+package com.example.explorersos.feature_note.presentation.navigation
+
+class AppNavigation
