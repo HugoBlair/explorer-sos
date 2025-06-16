@@ -19,9 +19,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             ExplorerSOSTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    TripItem(
+                        Trip(
+                            id = 1,
+                            title = "Big Climb",
+                            destination = "Mt Kaukau",
+                            startDate = "2025-01-01T00:00:00Z",
+                            endDate = "2025-01-02T00:00:00Z",
+                            createdAt = "2024-12-31T23:59:59Z"
+                        ),
+                        modifier = Modifier.padding(innerPadding),
+                        onClick = {}
+
+
                     )
                     TripItem(
                         Trip(
@@ -32,11 +42,12 @@ class MainActivity : ComponentActivity() {
                             endDate = "2025-01-02T00:00:00Z",
                             createdAt = "2024-12-31T23:59:59Z"
                         ),
-                        modifier = Modifier,
+                        modifier = Modifier.padding(innerPadding),
                         onClick = {}
 
 
                     )
+
                 }
             }
         }
