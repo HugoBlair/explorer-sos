@@ -10,6 +10,7 @@ import com.example.explorersos.feature_note.domain.use_case.DeleteTrip
 import com.example.explorersos.feature_note.domain.use_case.GetTrip
 import com.example.explorersos.feature_note.domain.use_case.GetTrips
 import com.example.explorersos.feature_note.domain.use_case.TripUseCases
+import com.example.explorersos.feature_note.presentation.trips.TripsViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -28,6 +29,8 @@ val appModule = module {
     }
 
     single<TripRepository> { TripRepositoryImpl(get<TripDao>()) }
+
+    single<TripsViewModel> { TripsViewModel(get<TripUseCases>()) }
 
     single<TripUseCases> {
         TripUseCases(
