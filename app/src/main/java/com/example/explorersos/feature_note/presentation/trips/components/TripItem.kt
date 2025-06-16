@@ -41,8 +41,8 @@ fun TripItem(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp),
+            .padding(horizontal = 16.dp)
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -54,8 +54,7 @@ fun TripItem(
         ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Left side content
@@ -63,15 +62,18 @@ fun TripItem(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
+                    modifier = Modifier.padding(horizontal = 10.dp),
                     text = trip.title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.Black
+
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
+                    modifier = Modifier.padding(horizontal = 10.dp),
                     text = getRelativeTimeString(trip.endDate),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
