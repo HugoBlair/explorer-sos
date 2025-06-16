@@ -118,5 +118,6 @@ dependencies {
     androidTestImplementation(libs.androidx.room.testing)
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation("androidx.compose.material:material-icons-extended")
 }
