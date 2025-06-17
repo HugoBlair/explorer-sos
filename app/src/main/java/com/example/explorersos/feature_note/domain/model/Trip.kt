@@ -8,13 +8,16 @@ import java.time.ZonedDateTime
 data class Trip(
     @PrimaryKey val id: Int? = null,
     val title: String,
-    val destination: String,
+    val startLocation: String,
+    val endLocation: String = startLocation,
     val startDate: String,
-    val endDate: String,
+    val expectedEndDate: String,
+    val startTime: String,
+    val expectedEndTime: String,
     val isActive: Boolean = false,
     val description: String = "I am ${if (isActive) "currently on" else "planning"}" +
-            " the \"$title\" trip to $destination. I am planning to leave on $startDate" +
-            " and return on $endDate.",
+            " the \"$title\" trip from $startLocation to $endLocation . I am planning to leave on $startDate" +
+            " and return on $expectedEndDate at $expectedEndTime.",
     val createdAt: String = ZonedDateTime.now().toString(),
     val alertId: Int? = null // FK to Alert table
 
@@ -23,18 +26,18 @@ data class Trip(
         if (title.isBlank()) {
             throw InvalidTripException("Title cannot be blank.")
         }
-        if (destination.isBlank()) {
+        if (startLocation.isBlank()) {
             throw InvalidTripException("Destination cannot be blank.")
         }
         if (startDate.isBlank()) {
             throw InvalidTripException("Start date cannot be blank.")
         }
-        if (endDate.isBlank()) {
+        if (expectedEndDate.isBlank()) {
             throw InvalidTripException("End date cannot be blank.")
 
 
         }
-        if (startDate > endDate) {
+        if (startDate > expectedEndDate) {
             throw InvalidTripException("Start date cannot be after end date.")
         }
         if (createdAt > ZonedDateTime.now().toString()) {
