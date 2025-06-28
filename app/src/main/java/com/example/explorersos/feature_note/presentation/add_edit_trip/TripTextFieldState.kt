@@ -1,4 +1,7 @@
 package com.example.explorersos.feature_note.presentation.add_edit_trip
 
-class TripTextFieldState {
-}
+data class TripTextFieldState(
+    val text: String = "",
+    val hint: String = "",
+    val isHintVisible: Boolean = true
+)
