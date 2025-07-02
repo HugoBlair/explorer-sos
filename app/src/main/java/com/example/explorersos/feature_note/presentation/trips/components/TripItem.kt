@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,16 +31,14 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.explorersos.feature_note.domain.model.Trip
-import java.time.Duration
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
+import com.example.explorersos.feature_note.domain.util.DateTimeUtils.getRelativeTimeString
 
 @Composable
 fun TripItem(
     trip: Trip,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onEditClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
@@ -74,9 +76,18 @@ fun TripItem(
 
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = getRelativeTimeString(trip.endDate),
+                    text = getRelativeTimeString(trip.expectedEndDate),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
+                )
+            }
+            IconButton(
+                onClick = onEditClick
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit trip",
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -170,21 +181,5 @@ fun TopographicPattern(
 
 }
 
-fun getRelativeTimeString(utcString: String): String {
-    val formatter = DateTimeFormatter.ISO_DATE_TIME
-    val parsedTime = OffsetDateTime.parse(utcString, formatter)
 
-    val now = OffsetDateTime.now(ZoneOffset.UTC)
-    val duration = Duration.between(parsedTime, now)
-
-    return when {
-        duration.toMinutes() < 1 -> "just now"
-        duration.toMinutes() < 60 -> "${duration.toMinutes()} minutes ago"
-        duration.toHours() < 24 -> "${duration.toHours()} hours ago"
-        duration.toDays() < 7 -> "${duration.toDays()} days ago"
-        duration.toDays() < 365 -> "${duration.toDays() / 7} weeks ago"
-        duration.toDays() >= 365 -> "${duration.toDays() / 365} years ago"
-        else -> parsedTime.toLocalDate().toString() // fallback to date string
-    }
-}
 
