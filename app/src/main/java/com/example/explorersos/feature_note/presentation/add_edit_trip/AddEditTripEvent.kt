@@ -1,6 +1,7 @@
 package com.example.explorersos.feature_note.presentation.add_edit_trip
 
 import androidx.compose.ui.focus.FocusState
+import java.time.Instant
 
 sealed class AddEditTripEvent {
     // Title events
@@ -19,21 +20,13 @@ sealed class AddEditTripEvent {
     data class EnteredEndLocation(val value: String) : AddEditTripEvent()
     data class ChangeEndLocationFocus(val focusState: FocusState) : AddEditTripEvent()
 
-    // Start Date events
-    data class EnteredStartDate(val value: String) : AddEditTripEvent()
-    data class ChangeStartDateFocus(val focusState: FocusState) : AddEditTripEvent()
+    // Start DateTime events
+    data class EnteredStartDateTime(val value: Instant) : AddEditTripEvent()
+    data class ChangeStartDateTimeFocus(val focusState: FocusState) : AddEditTripEvent()
 
-    // Expected End Date events
-    data class EnteredExpectedEndDate(val value: String) : AddEditTripEvent()
-    data class ChangeExpectedEndDateFocus(val focusState: FocusState) : AddEditTripEvent()
-
-    // Start Time events
-    data class EnteredStartTime(val value: String) : AddEditTripEvent()
-    data class ChangeStartTimeFocus(val focusState: FocusState) : AddEditTripEvent()
-
-    // Expected End Time events
-    data class EnteredExpectedEndTime(val value: String) : AddEditTripEvent()
-    data class ChangeExpectedEndTimeFocus(val focusState: FocusState) : AddEditTripEvent()
+    // End DateTime events
+    data class EnteredEndDateTime(val value: Instant) : AddEditTripEvent()
+    data class ChangeEndDateTimeFocus(val focusState: FocusState) : AddEditTripEvent()
 
     // Toggle events
     object ToggleActiveStatus : AddEditTripEvent()

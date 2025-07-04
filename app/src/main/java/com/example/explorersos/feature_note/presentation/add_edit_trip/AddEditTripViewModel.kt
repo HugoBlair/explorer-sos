@@ -38,25 +38,14 @@ class AddEditTripViewModel(
         mutableStateOf(TripTextFieldState(hint = "Enter your end location"))
     val tripEndLocation: State<TripTextFieldState> = _tripEndLocation
 
-    // Start Date
-    private val _tripStartDate =
-        mutableStateOf(TripTextFieldState(hint = "Enter your trip's start date"))
-    val tripStartDate: State<TripTextFieldState> = _tripStartDate
+    private var _tripStartDateTime =
+        mutableStateOf(TripDateTimePickerState(hint = "Pick your trip's starting date and time"))
+    val tripStartDateTime: State<TripDateTimePickerState> = _tripStartDateTime
 
-    // Expected End Date
-    private val _tripExpectedEndDate =
-        mutableStateOf(TripTextFieldState(hint = "Enter your trip's expected end date"))
-    val tripExpectedEndDate: State<TripTextFieldState> = _tripExpectedEndDate
+    private var _tripEndDateTime =
+        mutableStateOf(TripDateTimePickerState(hint = "Pick your trip's finishing date and time"))
+    val tripEndDateTime: State<TripDateTimePickerState> = _tripEndDateTime
 
-    // Start Time
-    private val _tripStartTime =
-        mutableStateOf(TripTextFieldState(hint = "Enter your trip's start time"))
-    val tripStartTime: State<TripTextFieldState> = _tripStartTime
-
-    // Expected End Time
-    private val _tripExpectedEndTime =
-        mutableStateOf(TripTextFieldState(hint = "Enter your trip's expected end time"))
-    val tripExpectedEndTime: State<TripTextFieldState> = _tripExpectedEndTime
 
     // Trip Status (Active/Inactive)
     private val _isActive = mutableStateOf(false)
@@ -97,21 +86,12 @@ class AddEditTripViewModel(
                             text = trip.endLocation,
                             isHintVisible = false
                         )
-                        _tripStartDate.value = tripStartDate.value.copy(
-                            text = trip.startDate,
-                            isHintVisible = false
+                        _tripStartDateTime.value = tripStartDateTime.value.copy(
+                            selectedDateTime = trip.startDateTime,
                         )
-                        _tripExpectedEndDate.value = tripExpectedEndDate.value.copy(
-                            text = trip.expectedEndDate,
-                            isHintVisible = false
-                        )
-                        _tripStartTime.value = tripStartTime.value.copy(
-                            text = trip.startTime,
-                            isHintVisible = false
-                        )
-                        _tripExpectedEndTime.value = tripExpectedEndTime.value.copy(
-                            text = trip.expectedEndTime,
-                            isHintVisible = false
+
+                        _tripEndDateTime.value = tripEndDateTime.value.copy(
+                            selectedDateTime = trip.expectedEndDateTime,
                         )
                         _isActive.value = trip.isActive
                         _isRoundTrip.value = trip.startLocation == trip.endLocation
@@ -176,57 +156,33 @@ class AddEditTripViewModel(
                 )
             }
 
-            is AddEditTripEvent.EnteredStartDate -> {
-                _tripStartDate.value = tripStartDate.value.copy(
-                    text = event.value
+            is AddEditTripEvent.EnteredStartDateTime -> {
+                _tripStartDateTime.value = tripStartDateTime.value.copy(
+                    selectedDateTime = event.value
                 )
             }
 
-            is AddEditTripEvent.ChangeStartDateFocus -> {
-                _tripStartDate.value = tripStartDate.value.copy(
-                    isHintVisible = !event.focusState.isFocused &&
-                            tripStartDate.value.text.isBlank()
+            is AddEditTripEvent.ChangeStartDateTimeFocus -> {
+                _tripStartDateTime.value = tripStartDateTime.value.copy(
+                    isDateTimePickerVisible = !event.focusState.isFocused &&
+                            tripStartDateTime.value.selectedDateTime == null
+                )
+
+            }
+
+            is AddEditTripEvent.EnteredEndDateTime -> {
+                _tripEndDateTime.value = tripEndDateTime.value.copy(
+                    selectedDateTime = event.value
                 )
             }
 
-            is AddEditTripEvent.EnteredExpectedEndDate -> {
-                _tripExpectedEndDate.value = tripExpectedEndDate.value.copy(
-                    text = event.value
+            is AddEditTripEvent.ChangeEndDateTimeFocus -> {
+                _tripEndDateTime.value = tripEndDateTime.value.copy(
+                    isDateTimePickerVisible = !event.focusState.isFocused &&
+                            tripEndDateTime.value.selectedDateTime == null
                 )
             }
 
-            is AddEditTripEvent.ChangeExpectedEndDateFocus -> {
-                _tripExpectedEndDate.value = tripExpectedEndDate.value.copy(
-                    isHintVisible = !event.focusState.isFocused &&
-                            tripExpectedEndDate.value.text.isBlank()
-                )
-            }
-
-            is AddEditTripEvent.EnteredStartTime -> {
-                _tripStartTime.value = tripStartTime.value.copy(
-                    text = event.value
-                )
-            }
-
-            is AddEditTripEvent.ChangeStartTimeFocus -> {
-                _tripStartTime.value = tripStartTime.value.copy(
-                    isHintVisible = !event.focusState.isFocused &&
-                            tripStartTime.value.text.isBlank()
-                )
-            }
-
-            is AddEditTripEvent.EnteredExpectedEndTime -> {
-                _tripExpectedEndTime.value = tripExpectedEndTime.value.copy(
-                    text = event.value
-                )
-            }
-
-            is AddEditTripEvent.ChangeExpectedEndTimeFocus -> {
-                _tripExpectedEndTime.value = tripExpectedEndTime.value.copy(
-                    isHintVisible = !event.focusState.isFocused &&
-                            tripExpectedEndTime.value.text.isBlank()
-                )
-            }
 
             is AddEditTripEvent.ToggleActiveStatus -> {
                 _isActive.value = !_isActive.value
@@ -261,19 +217,13 @@ class AddEditTripViewModel(
                                 title = tripTitle.value.text,
                                 startLocation = tripStartLocation.value.text,
                                 endLocation = finalEndLocation,
-                                startDate = tripStartDate.value.text,
-                                expectedEndDate = tripExpectedEndDate.value.text,
-                                startTime = tripStartTime.value.text,
-                                expectedEndTime = tripExpectedEndTime.value.text,
+                                startDateTime = tripStartDateTime.value.selectedDateTime!!,
+                                expectedEndDateTime = tripEndDateTime.value.selectedDateTime!!,
                                 isActive = isActive.value,
                                 description = if (tripDescription.value.text.isNotBlank()) {
                                     tripDescription.value.text
                                 } else {
-                                    // Use default description from Trip constructor if no custom description
-                                    "I am ${if (isActive.value) "currently on" else "planning"}" +
-                                            " the \"${tripTitle.value.text}\" trip from ${tripStartLocation.value.text} to $finalEndLocation . " +
-                                            "I am planning to leave on ${tripStartDate.value.text}" +
-                                            " and return on ${tripExpectedEndDate.value.text} at ${tripExpectedEndTime.value.text}."
+                                    ""
                                 }
                             )
                         )

@@ -76,7 +76,7 @@ fun TripItem(
 
                 Text(
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    text = getRelativeTimeString(trip.expectedEndDate),
+                    text = getRelativeTimeString(trip.expectedEndDateTime.toString()),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
