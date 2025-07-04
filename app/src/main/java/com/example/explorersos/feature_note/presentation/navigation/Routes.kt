@@ -7,5 +7,8 @@ sealed class Routes {
     @Serializable
     data object TripsScreenRoute : Routes()
 
-    data class AddEditTripScreenRoute(val tripId: Int? = null) : Routes()
+    @Serializable
+    data class AddEditTripScreenRoute(
+        val tripId: Int = -1
+    )
 }
