@@ -37,7 +37,10 @@ object DateTimeUtils {
 
     }
 
-    fun getFormattedDisplayTime(eventInstant: Instant): String {
+    fun getFormattedDisplayTime(eventInstant: Instant?): String {
+        if (eventInstant == null) {
+            return "Non Valid Date"
+        }
         // Get the user's current timezone
         val userZoneId = ZoneId.systemDefault()
 
