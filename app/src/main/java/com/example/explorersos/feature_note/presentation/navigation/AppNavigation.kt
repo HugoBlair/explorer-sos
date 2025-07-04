@@ -31,6 +31,7 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
             val args = backStackEntry.toRoute<Routes.AddEditTripScreenRoute>()
             AddEditTripScreen(
                 navController = navController,
+                viewModel = koinViewModel(),
                 tripId = args.tripId
             )
         }

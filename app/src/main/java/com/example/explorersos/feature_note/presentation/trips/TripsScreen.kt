@@ -6,7 +6,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -112,12 +111,12 @@ fun TripsScreen(
                     TripItem(
                         trip = trip,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                navController.navigate(
-                                    AddEditTripScreenRoute(tripId = trip.id)
-                                )
-                            }
+                            .fillMaxWidth(),
+                        onEditClick = {
+                            navController.navigate(
+                                AddEditTripScreenRoute(tripId = trip.id ?: -1)
+                            )
+                        }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
