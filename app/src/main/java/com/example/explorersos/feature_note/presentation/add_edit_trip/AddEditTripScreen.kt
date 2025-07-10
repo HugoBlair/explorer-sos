@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.explorersos.feature_note.domain.util.DateTimeUtils.getFormattedDisplayTime
+import com.example.explorersos.feature_note.presentation.add_edit_trip.components.SaveTripPopup
 import com.example.explorersos.feature_note.presentation.add_edit_trip.components.TransparentHintTextField
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -80,14 +81,32 @@ fun AddEditTripScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
+            SaveTripPopup(
+                onStartNow = {
+                    // Set start date to now
+                    viewModel.onEvent(AddEditTripEvent.EnteredStartDateTime(Instant.now()))
+                    // Then save the trip
                     viewModel.onEvent(AddEditTripEvent.SaveTrip)
                 },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(imageVector = Icons.Default.Save, contentDescription = "Save Trip")
+                onStartLater = { selectedDateTime ->
+                    // Set the selected start date
+                    viewModel.onEvent(AddEditTripEvent.EnteredStartDateTime(selectedDateTime))
+                    // Then save the trip
+                    viewModel.onEvent(AddEditTripEvent.SaveTrip)
+                },
+                onCancel = {
+                    // Do nothing, just close the popup
+                }
+            ) { launchPopup ->
+                FloatingActionButton(
+                    onClick = {
+                        launchPopup()
+                    },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    Icon(imageVector = Icons.Default.Save, contentDescription = "Save Trip")
+                }
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -246,51 +265,6 @@ fun AddEditTripScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-            DateTimePicker(
-                initialTimestamp = startDateTimeState.selectedDateTime?.toEpochMilli()
-                    ?: Instant.now().toEpochMilli(),
-                onTimestampSelected = { newTimestamp ->
-                    viewModel.onEvent(
-                        AddEditTripEvent.EnteredStartDateTime(
-                            Instant.ofEpochMilli(
-                                newTimestamp
-                            )
-                        )
-                    )
-                }
-            ) { launchPicker ->
-                Button(onClick = launchPicker) {
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        val dateTime = getFormattedDisplayTime(startDateTimeState.selectedDateTime)
-                        if (dateTime == "Non Valid Date") {
-                            Text(
-                                text = "Add Your Trip's Start Date & Time",
-                                style = MaterialTheme.typography.bodyLarge,
-                                textAlign = TextAlign.Center
-                            )
-                        } else {
-
-                            Text(
-                                text = dateTime,
-                                style = MaterialTheme.typography.bodyLarge,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-
-                        Icon(
-                            imageVector = Icons.Default.EditCalendar,
-                            contentDescription = "Edit Start Date/Time"
-                        )
-
-                    }
-                }
-
-
-            }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Pick your trip's End date and time",
