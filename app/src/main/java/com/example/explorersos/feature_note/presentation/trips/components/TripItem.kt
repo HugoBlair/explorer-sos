@@ -47,7 +47,8 @@ fun TripItem(
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            if (trip.isActive) Color.Red else Color.White
+
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp

@@ -27,6 +27,10 @@ sealed class AddEditTripEvent {
     // End DateTime events
     data class EnteredEndDateTime(val value: Instant) : AddEditTripEvent()
     data class ChangeEndDateTimeFocus(val focusState: FocusState) : AddEditTripEvent()
+    
+    //Set Active Status
+    data class SetActiveStatus(val value: Boolean) : AddEditTripEvent()
+
 
     // Toggle events
     object ToggleActiveStatus : AddEditTripEvent()

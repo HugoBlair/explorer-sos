@@ -183,6 +183,10 @@ class AddEditTripViewModel(
                 )
             }
 
+            is AddEditTripEvent.SetActiveStatus -> {
+                _isActive.value = event.value
+            }
+
 
             is AddEditTripEvent.ToggleActiveStatus -> {
                 _isActive.value = !_isActive.value

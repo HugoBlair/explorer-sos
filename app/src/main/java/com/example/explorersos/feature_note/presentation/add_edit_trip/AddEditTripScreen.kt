@@ -85,10 +85,12 @@ fun AddEditTripScreen(
                 onStartNow = {
                     // Set start date to now
                     viewModel.onEvent(AddEditTripEvent.EnteredStartDateTime(Instant.now()))
+                    viewModel.onEvent(AddEditTripEvent.SetActiveStatus(true))
                     // Then save the trip
                     viewModel.onEvent(AddEditTripEvent.SaveTrip)
                 },
                 onStartLater = { selectedDateTime ->
+                    viewModel.onEvent(AddEditTripEvent.SetActiveStatus(false))
                     // Set the selected start date
                     viewModel.onEvent(AddEditTripEvent.EnteredStartDateTime(selectedDateTime))
                     // Then save the trip
@@ -149,44 +151,6 @@ fun AddEditTripScreen(
                 textStyle = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.height(100.dp)
             )
-
-            // Trip Status Toggle
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Trip Status",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = if (isActive) "Active" else "Inactive",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = if (isActive) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Switch(
-                            checked = isActive,
-                            onCheckedChange = {
-                                viewModel.onEvent(AddEditTripEvent.ToggleActiveStatus)
-                            }
-                        )
-                    }
-                }
-            }
 
             // Round Trip Toggle
             Card(
