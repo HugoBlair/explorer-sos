@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -97,6 +98,8 @@ fun AddEditTripScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
+
+
         ) {
             //Title
             TransparentHintTextField(
@@ -235,6 +238,7 @@ fun AddEditTripScreen(
                     textStyle = MaterialTheme.typography.bodyLarge
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Date and Time Section
             Text(
@@ -242,10 +246,6 @@ fun AddEditTripScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-
-
-
-
             DateTimePicker(
                 initialTimestamp = startDateTimeState.selectedDateTime?.toEpochMilli()
                     ?: Instant.now().toEpochMilli(),
@@ -260,15 +260,43 @@ fun AddEditTripScreen(
                 }
             ) { launchPicker ->
                 Button(onClick = launchPicker) {
-                    Text("Select Start Date & Time")
-                }
-            }
-            Text(
-                text = getFormattedDisplayTime(startDateTimeState.selectedDateTime),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
-            )
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        val dateTime = getFormattedDisplayTime(startDateTimeState.selectedDateTime)
+                        if (dateTime == "Non Valid Date") {
+                            Text(
+                                text = "Add Your Trip's Start Date & Time",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center
+                            )
+                        } else {
+
+                            Text(
+                                text = dateTime,
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        Icon(
+                            imageVector = Icons.Default.EditCalendar,
+                            contentDescription = "Edit Start Date/Time"
+                        )
+
+                    }
+                }
+
+
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Pick your trip's End date and time",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
             DateTimePicker(
                 initialTimestamp = endDateTimeState.selectedDateTime?.toEpochMilli()
                     ?: Instant.now().toEpochMilli(),
@@ -283,17 +311,46 @@ fun AddEditTripScreen(
                 }
             ) { launchPicker ->
                 Button(onClick = launchPicker) {
-                    Text("Select A End Date & Time")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        val dateTime = getFormattedDisplayTime(endDateTimeState.selectedDateTime)
+                        if (dateTime == "Non Valid Date") {
+                            Text(
+                                text = "Add Your Trip's End Date & Time",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center
+                            )
+                        } else {
+
+                            Text(
+                                text = dateTime,
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        Icon(
+                            imageVector = Icons.Default.EditCalendar,
+                            contentDescription = "Edit End Date/Time"
+                        )
+
+                    }
                 }
+
+
             }
-            Text(
-                text = getFormattedDisplayTime(endDateTimeState.selectedDateTime),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
-            )
-
-
-            Spacer(modifier = Modifier.height(72.dp))
         }
+
+
     }
+
+
+
+
+    Spacer(modifier = Modifier.height(72.dp))
 }
+
+
