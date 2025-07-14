@@ -312,7 +312,7 @@ class AddEditTripViewModel(
                             )
                         )
                     } catch (e: NullPointerException) {
-                        _eventFlow.emit(UiEvent.ShowSnackbar(message = "Please select a start and end date for your trip."))
+                        _eventFlow.emit(UiEvent.ShowSnackbar(message = "Please select a end date for your trip."))
                     }
                 }
 

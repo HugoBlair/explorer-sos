@@ -242,14 +242,6 @@ fun AddEditTripScreen(
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Date and Time Section
-            Text(
-                text = "Pick your trip's starting date and time",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Pick your trip's End date and time",
                 style = MaterialTheme.typography.titleMedium,
