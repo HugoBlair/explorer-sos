@@ -1,5 +1,6 @@
 package com.example.explorersos.feature_trip.presentation.add_edit_trip
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -8,14 +9,27 @@ import androidx.lifecycle.viewModelScope
 import com.example.explorersos.feature_trip.domain.model.Trip
 import com.example.explorersos.feature_trip.domain.model.Trip.InvalidTripException
 import com.example.explorersos.feature_trip.domain.use_case.TripUseCases
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
+@OptIn(FlowPreview::class)
 class AddEditTripViewModel(
     private val tripUseCases: TripUseCases,
+    private val placesClient: PlacesClient,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val token = AutocompleteSessionToken.newInstance()
+
 
     private var currentTripId: Int? = null
 
@@ -27,6 +41,7 @@ class AddEditTripViewModel(
     private val _tripDescription =
         mutableStateOf(TripTextFieldState(hint = "(Optional) Enter a description of your trip"))
     val tripDescription: State<TripTextFieldState> = _tripDescription
+
 
     // Start Location
     private val _tripStartLocation =
@@ -45,6 +60,16 @@ class AddEditTripViewModel(
     private var _tripEndDateTime =
         mutableStateOf(TripDateTimePickerState(hint = "Pick your trip's finishing date and time"))
     val tripEndDateTime: State<TripDateTimePickerState> = _tripEndDateTime
+
+    // Autocomplete
+    private val _startLocationQuery = MutableStateFlow("")
+    private val _startLocationPredictions =
+        mutableStateOf<List<AutocompletePrediction>>(emptyList())
+    val startLocationPredictions: State<List<AutocompletePrediction>> = _startLocationPredictions
+
+    private val _endLocationQuery = MutableStateFlow("")
+    private val _endLocationPredictions = mutableStateOf<List<AutocompletePrediction>>(emptyList())
+    val endLocationPredictions: State<List<AutocompletePrediction>> = _endLocationPredictions
 
 
     // Trip Status (Active/Inactive)
@@ -99,6 +124,45 @@ class AddEditTripViewModel(
                 }
             }
         }
+        observeLocationQueries()
+    }
+
+    private fun observeLocationQueries() {
+        viewModelScope.launch {
+            _startLocationQuery
+                .debounce(300L)
+                .distinctUntilChanged()
+                .collect { query ->
+                    searchPlaces(query, _startLocationPredictions)
+                }
+        }
+        viewModelScope.launch {
+            _endLocationQuery
+                .debounce(300L)
+                .distinctUntilChanged()
+                .collect { query ->
+                    searchPlaces(query, _endLocationPredictions)
+                }
+        }
+    }
+
+    private fun searchPlaces(
+        query: String,
+        predictionsState: MutableState<List<AutocompletePrediction>>
+    ) {
+        if (query.length < 3) {
+            predictionsState.value = emptyList()
+            return
+        }
+        val request = FindAutocompletePredictionsRequest.builder()
+            .setSessionToken(token)
+            .setQuery(query)
+            .build()
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
+            predictionsState.value = response.autocompletePredictions
+        }.addOnFailureListener {
+            predictionsState.value = emptyList()
+        }
     }
 
     // Events for handling UI interactions
@@ -131,29 +195,47 @@ class AddEditTripViewModel(
             }
 
             is AddEditTripEvent.EnteredStartLocation -> {
-                _tripStartLocation.value = tripStartLocation.value.copy(
-                    text = event.value
-                )
+                _tripStartLocation.value = _tripStartLocation.value.copy(text = event.value)
+                _startLocationQuery.value = event.value
             }
 
             is AddEditTripEvent.ChangeStartLocationFocus -> {
-                _tripStartLocation.value = tripStartLocation.value.copy(
-                    isHintVisible = !event.focusState.isFocused &&
-                            tripStartLocation.value.text.isBlank()
+                _tripStartLocation.value = _tripStartLocation.value.copy(
+                    isHintVisible = !event.focusState.isFocused && _tripStartLocation.value.text.isBlank()
                 )
+                if (!event.focusState.isFocused) {
+                    _startLocationPredictions.value = emptyList()
+                }
+            }
+
+            is AddEditTripEvent.SelectStartLocation -> {
+                _tripStartLocation.value = _tripStartLocation.value.copy(
+                    text = event.prediction.getPrimaryText(null).toString(),
+                    isHintVisible = false
+                )
+                _startLocationPredictions.value = emptyList()
             }
 
             is AddEditTripEvent.EnteredEndLocation -> {
-                _tripEndLocation.value = tripEndLocation.value.copy(
-                    text = event.value
-                )
+                _tripEndLocation.value = _tripEndLocation.value.copy(text = event.value)
+                _endLocationQuery.value = event.value
             }
 
             is AddEditTripEvent.ChangeEndLocationFocus -> {
-                _tripEndLocation.value = tripEndLocation.value.copy(
-                    isHintVisible = !event.focusState.isFocused &&
-                            tripEndLocation.value.text.isBlank()
+                _tripEndLocation.value = _tripEndLocation.value.copy(
+                    isHintVisible = !event.focusState.isFocused && _tripEndLocation.value.text.isBlank()
                 )
+                if (!event.focusState.isFocused) {
+                    _endLocationPredictions.value = emptyList()
+                }
+            }
+
+            is AddEditTripEvent.SelectEndLocation -> {
+                _tripEndLocation.value = _tripEndLocation.value.copy(
+                    text = event.prediction.getPrimaryText(null).toString(),
+                    isHintVisible = false
+                )
+                _endLocationPredictions.value = emptyList()
             }
 
             is AddEditTripEvent.EnteredStartDateTime -> {
@@ -208,13 +290,8 @@ class AddEditTripViewModel(
             is AddEditTripEvent.SaveTrip -> {
                 viewModelScope.launch {
                     try {
-                        // Determine end location based on round trip toggle
-                        val finalEndLocation = if (isRoundTrip.value) {
-                            tripStartLocation.value.text
-                        } else {
-                            tripEndLocation.value.text
-                        }
-
+                        val finalEndLocation =
+                            if (isRoundTrip.value) _tripStartLocation.value.text else _tripEndLocation.value.text
                         tripUseCases.addTrip(
                             Trip(
                                 id = currentTripId,
@@ -224,11 +301,7 @@ class AddEditTripViewModel(
                                 startDateTime = tripStartDateTime.value.selectedDateTime!!,
                                 expectedEndDateTime = tripEndDateTime.value.selectedDateTime!!,
                                 isActive = isActive.value,
-                                description = if (tripDescription.value.text.isNotBlank()) {
-                                    tripDescription.value.text
-                                } else {
-                                    ""
-                                }
+                                description = if (tripDescription.value.text.isNotBlank()) tripDescription.value.text else ""
                             )
                         )
                         _eventFlow.emit(UiEvent.SaveTrip)
@@ -238,8 +311,11 @@ class AddEditTripViewModel(
                                 message = e.message ?: "Couldn't save trip"
                             )
                         )
+                    } catch (e: NullPointerException) {
+                        _eventFlow.emit(UiEvent.ShowSnackbar(message = "Please select a start and end date for your trip."))
                     }
                 }
+
             }
         }
     }

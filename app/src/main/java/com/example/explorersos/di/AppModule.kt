@@ -12,11 +12,13 @@ import com.example.explorersos.feature_trip.domain.use_case.GetTrips
 import com.example.explorersos.feature_trip.domain.use_case.TripUseCases
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.AddEditTripViewModel
 import com.example.explorersos.feature_trip.presentation.trips.TripsViewModel
+import com.google.android.libraries.places.api.Places
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
+    single { Places.createClient(androidApplication()) }
 
     single<TripDatabase> {
         Room.databaseBuilder(
@@ -34,7 +36,7 @@ val appModule = module {
 
     viewModel<TripsViewModel> { TripsViewModel(get()) }
 
-    viewModel<AddEditTripViewModel> { AddEditTripViewModel(get(), get()) }
+    viewModel<AddEditTripViewModel> { AddEditTripViewModel(get(), get(), get()) }
 
     single<TripUseCases> {
         TripUseCases(

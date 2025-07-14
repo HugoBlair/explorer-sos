@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,14 @@ plugins {
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
 }
+
+// Load properties from local.properties file
+val localProperties = Properties()
+val localPropertiesFile = project.rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -18,8 +28,13 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Read the API key from the loaded properties
+        buildConfigField(
+            "String",
+            "PLACES_API_KEY",
+            "\"${localProperties.getProperty("PLACES_API_KEY")}\""
+        )
     }
 
     buildTypes {
@@ -41,6 +56,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -79,6 +95,9 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     testImplementation("androidx.room:room-testing:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
+
+    implementation("com.google.android.libraries.places:places:4.3.1")
+    implementation("com.google.android.material:material:1.12.0")
 
 
 

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.explorersos.feature_trip.domain.util.DateTimeUtils.getFormattedDisplayTime
+import com.example.explorersos.feature_trip.presentation.add_edit_trip.components.PlacesAutocompleteTextField
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.components.SaveTripPopup
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.components.TransparentHintTextField
 import kotlinx.coroutines.launch
@@ -52,8 +53,10 @@ fun AddEditTripScreen(
     val endLocationState = viewModel.tripEndLocation.value
     val startDateTimeState = viewModel.tripStartDateTime.value
     val endDateTimeState = viewModel.tripEndDateTime.value
-    val isActive = viewModel.isActive.value
     val isRoundTrip = viewModel.isRoundTrip.value
+
+    val startLocationPredictions = viewModel.startLocationPredictions.value
+    val endLocationPredictions = viewModel.endLocationPredictions.value
 
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -81,7 +84,9 @@ fun AddEditTripScreen(
 
     Scaffold(
         floatingActionButton = {
+
             SaveTripPopup(
+
                 onStartNow = {
                     // Set start date to now
                     viewModel.onEvent(AddEditTripEvent.EnteredStartDateTime(Instant.now()))
@@ -102,7 +107,13 @@ fun AddEditTripScreen(
             ) { launchPopup ->
                 FloatingActionButton(
                     onClick = {
-                        launchPopup()
+                        if (startDateTimeState.selectedDateTime == null) {
+                            // Show popup for start date selection
+                            launchPopup()
+                        } else {
+                            // Start date is already set, save directly
+                            viewModel.onEvent(AddEditTripEvent.SaveTrip)
+                        }
                     },
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -110,6 +121,7 @@ fun AddEditTripScreen(
                     Icon(imageVector = Icons.Default.Save, contentDescription = "Save Trip")
                 }
             }
+
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
@@ -191,7 +203,7 @@ fun AddEditTripScreen(
             }
 
             // Start Location
-            TransparentHintTextField(
+            PlacesAutocompleteTextField(
                 text = startLocationState.text,
                 hint = startLocationState.hint,
                 onValueChange = {
@@ -202,12 +214,16 @@ fun AddEditTripScreen(
                 },
                 isHintVisible = startLocationState.isHintVisible,
                 singleLine = true,
-                textStyle = MaterialTheme.typography.bodyLarge
+                textStyle = MaterialTheme.typography.bodyLarge,
+                predictions = startLocationPredictions,
+                onPredictionSelected = { prediction ->
+                    viewModel.onEvent(AddEditTripEvent.SelectStartLocation(prediction))
+                }
             )
 
             // End Location (only show if not round trip)
             if (!isRoundTrip) {
-                TransparentHintTextField(
+                PlacesAutocompleteTextField(
                     text = endLocationState.text,
                     hint = endLocationState.hint,
                     onValueChange = {
@@ -218,7 +234,11 @@ fun AddEditTripScreen(
                     },
                     isHintVisible = endLocationState.isHintVisible,
                     singleLine = true,
-                    textStyle = MaterialTheme.typography.bodyLarge
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    predictions = endLocationPredictions,
+                    onPredictionSelected = { prediction ->
+                        viewModel.onEvent(AddEditTripEvent.SelectEndLocation(prediction))
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))

@@ -1,6 +1,7 @@
 package com.example.explorersos.feature_trip.presentation.add_edit_trip
 
 import androidx.compose.ui.focus.FocusState
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 import java.time.Instant
 
 sealed class AddEditTripEvent {
@@ -12,13 +13,16 @@ sealed class AddEditTripEvent {
     data class EnteredDescription(val value: String) : AddEditTripEvent()
     data class ChangeDescriptionFocus(val focusState: FocusState) : AddEditTripEvent()
 
+
     // Start Location events
     data class EnteredStartLocation(val value: String) : AddEditTripEvent()
     data class ChangeStartLocationFocus(val focusState: FocusState) : AddEditTripEvent()
+    data class SelectStartLocation(val prediction: AutocompletePrediction) : AddEditTripEvent()
 
     // End Location events
     data class EnteredEndLocation(val value: String) : AddEditTripEvent()
     data class ChangeEndLocationFocus(val focusState: FocusState) : AddEditTripEvent()
+    data class SelectEndLocation(val prediction: AutocompletePrediction) : AddEditTripEvent()
 
     // Start DateTime events
     data class EnteredStartDateTime(val value: Instant) : AddEditTripEvent()
