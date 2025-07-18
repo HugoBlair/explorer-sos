@@ -238,6 +238,45 @@ fun AddEditTripScreen(
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Edit Start Date/Time (only visible when editing an existing trip)
+            if (tripId != -1 && startDateTimeState.selectedDateTime != null) {
+                Text(
+                    text = "Edit your trip's Start date and time",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                DateTimePicker(
+                    initialTimestamp = startDateTimeState.selectedDateTime!!.toEpochMilli(),
+                    onTimestampSelected = { newTimestamp ->
+                        viewModel.onEvent(
+                            AddEditTripEvent.EnteredStartDateTime(
+                                Instant.ofEpochMilli(newTimestamp)
+                            )
+                        )
+                    }
+                ) { launchPicker ->
+                    Button(onClick = launchPicker) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = getFormattedDisplayTime(startDateTimeState.selectedDateTime),
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center
+                            )
+                            Icon(
+                                imageVector = Icons.Default.EditCalendar,
+                                contentDescription = "Edit Start Date/Time"
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+
             Text(
                 text = "Pick your trip's End date and time",
                 style = MaterialTheme.typography.titleMedium,
@@ -285,16 +324,8 @@ fun AddEditTripScreen(
 
                     }
                 }
-
-
             }
         }
-
-
     }
-
-
-
-
     Spacer(modifier = Modifier.height(72.dp))
 }
