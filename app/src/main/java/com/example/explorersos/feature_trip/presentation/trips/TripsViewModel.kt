@@ -54,6 +54,13 @@ class TripsViewModel(private val tripUseCases: TripUseCases) : ViewModel() {
                     isOrderSectionVisible = !state.value.isOrderSectionVisible
                 )
             }
+
+            is TripsEvent.EndTrip -> {
+                viewModelScope.launch {
+                    tripUseCases.addTrip(event.trip.copy(isActive = false))
+                }
+            }
+            
         }
     }
 
