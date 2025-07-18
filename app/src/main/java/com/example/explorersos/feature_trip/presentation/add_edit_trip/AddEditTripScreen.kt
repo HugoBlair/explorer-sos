@@ -84,21 +84,23 @@ fun AddEditTripScreen(
 
     Scaffold(
         floatingActionButton = {
-
             SaveTripPopup(
-
+                existingStartDate = startDateTimeState.selectedDateTime,
                 onStartNow = {
-                    // Set start date to now
+                    // Set start date to now and active status, then save
                     viewModel.onEvent(AddEditTripEvent.EnteredStartDateTime(Instant.now()))
                     viewModel.onEvent(AddEditTripEvent.SetActiveStatus(true))
-                    // Then save the trip
                     viewModel.onEvent(AddEditTripEvent.SaveTrip)
                 },
-                onStartLater = { selectedDateTime ->
+                onStartLaterWithNewDate = { selectedDateTime ->
+                    // Set selected start date and inactive status, then save
                     viewModel.onEvent(AddEditTripEvent.SetActiveStatus(false))
-                    // Set the selected start date
                     viewModel.onEvent(AddEditTripEvent.EnteredStartDateTime(selectedDateTime))
-                    // Then save the trip
+                    viewModel.onEvent(AddEditTripEvent.SaveTrip)
+                },
+                onStartLaterWithExistingDate = {
+                    // Set inactive status and save with the existing date
+                    viewModel.onEvent(AddEditTripEvent.SetActiveStatus(false))
                     viewModel.onEvent(AddEditTripEvent.SaveTrip)
                 },
                 onCancel = {
@@ -107,13 +109,8 @@ fun AddEditTripScreen(
             ) { launchPopup ->
                 FloatingActionButton(
                     onClick = {
-                        if (startDateTimeState.selectedDateTime == null) {
-                            // Show popup for start date selection
-                            launchPopup()
-                        } else {
-                            // Start date is already set, save directly
-                            viewModel.onEvent(AddEditTripEvent.SaveTrip)
-                        }
+                        // Always show the popup on click
+                        launchPopup()
                     },
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -121,7 +118,6 @@ fun AddEditTripScreen(
                     Icon(imageVector = Icons.Default.Save, contentDescription = "Save Trip")
                 }
             }
-
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
@@ -302,5 +298,3 @@ fun AddEditTripScreen(
 
     Spacer(modifier = Modifier.height(72.dp))
 }
-
-

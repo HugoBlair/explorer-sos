@@ -33,8 +33,10 @@ import java.time.Instant
 
 @Composable
 fun SaveTripPopup(
+    existingStartDate: Instant?,
     onStartNow: () -> Unit,
-    onStartLater: (Instant) -> Unit,
+    onStartLaterWithNewDate: (Instant) -> Unit,
+    onStartLaterWithExistingDate: () -> Unit,
     onCancel: () -> Unit,
     content: @Composable (launchPopup: () -> Unit) -> Unit
 ) {
@@ -63,7 +65,7 @@ fun SaveTripPopup(
             text = {
                 Column {
                     Text(
-                        text = "Would you like to start your trip right now?",
+                        text = "Would you like to start your trip right now or save it for later?",
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center
                     )
@@ -116,7 +118,7 @@ fun SaveTripPopup(
                     Button(
                         onClick = {
                             selectedDateTime?.let { dateTime ->
-                                onStartLater(dateTime)
+                                onStartLaterWithNewDate(dateTime)
                                 showDialog = false
                                 showDatePicker = false
                             }
@@ -138,7 +140,12 @@ fun SaveTripPopup(
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedButton(
                             onClick = {
-                                showDatePicker = true
+                                if (existingStartDate != null) {
+                                    onStartLaterWithExistingDate()
+                                    showDialog = false
+                                } else {
+                                    showDatePicker = true
+                                }
                             }
                         ) {
                             Text("Start Later")
