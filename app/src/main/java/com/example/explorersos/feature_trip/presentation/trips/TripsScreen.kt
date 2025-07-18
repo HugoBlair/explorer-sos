@@ -68,50 +68,92 @@ fun TripsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Your Trips",
+                    text = "My Trips",
                     style = MaterialTheme.typography.headlineMedium
                 )
-                IconButton(
-                    onClick = {
-                        viewModel.onEvent(TripsEvent.ToggleOrderSection)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Sort,
-                        contentDescription = "Sort"
-                    )
-                }
             }
-            AnimatedVisibility(
-                visible = state.isOrderSectionVisible,
-                enter = fadeIn() + slideInVertically(),
-                exit = fadeOut() + slideOutVertically()
-            ) {
-                OrderSection(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    tripOrder = state.tripOrder,
-                    onOrderChange = {
-                        viewModel.onEvent(TripsEvent.Order(it))
-                    }
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+
+            val (activeTrips, inactiveTrips) = state.trips.partition { it.isActive }
+
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(state.trips) { trip ->
+                // Ongoing Trip Section
+                if (activeTrips.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Ongoing Trip",
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                        )
+                    }
+                    items(activeTrips) { trip ->
+                        TripItem(
+                            trip = trip,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            onEndTripClick = { viewModel.onEvent(TripsEvent.EndTrip(trip)) }
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+
+                // All Trips Section Header
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "All trips",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        IconButton(
+                            onClick = {
+                                viewModel.onEvent(TripsEvent.ToggleOrderSection)
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Sort,
+                                contentDescription = "Sort"
+                            )
+                        }
+                    }
+                }
+
+                // Order Section
+                item {
+                    AnimatedVisibility(
+                        visible = state.isOrderSectionVisible,
+                        enter = fadeIn() + slideInVertically(),
+                        exit = fadeOut() + slideOutVertically()
+                    ) {
+                        OrderSection(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp, horizontal = 16.dp),
+                            tripOrder = state.tripOrder,
+                            onOrderChange = {
+                                viewModel.onEvent(TripsEvent.Order(it))
+                            }
+                        )
+                    }
+                }
+
+                // Inactive Trips List
+                items(inactiveTrips) { trip ->
                     TripItem(
                         trip = trip,
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.padding(horizontal = 16.dp),
                         onEditClick = {
                             navController.navigate(
                                 AddEditTripScreenRoute(tripId = trip.id ?: -1)
