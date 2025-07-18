@@ -59,3 +59,5 @@ This is where ExplorerSOS will evolve from a trip logger into an indispensable s
 *   **Personal Profile:**
     *   A section for vital personal information (blood type, allergies, medical conditions) that can be optionally included in an emergency alert.
     *   View personal stats like total trips completed, distance traveled, etc.
+
+Any and all of the future features could change at any time. They are just ideas.
