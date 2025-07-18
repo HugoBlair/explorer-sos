@@ -304,6 +304,8 @@ class AddEditTripViewModel(
                                 description = if (tripDescription.value.text.isNotBlank()) tripDescription.value.text else ""
                             )
                         )
+                        val message = if (isActive.value) "Trip started!" else "Trip saved!"
+                        _eventFlow.emit(UiEvent.ShowSnackbar(message))
                         _eventFlow.emit(UiEvent.SaveTrip)
                     } catch (e: InvalidTripException) {
                         _eventFlow.emit(
@@ -312,7 +314,7 @@ class AddEditTripViewModel(
                             )
                         )
                     } catch (e: NullPointerException) {
-                        _eventFlow.emit(UiEvent.ShowSnackbar(message = "Please select a end date for your trip."))
+                        _eventFlow.emit(UiEvent.ShowSnackbar(message = "Please select an end date for your trip."))
                     }
                 }
 

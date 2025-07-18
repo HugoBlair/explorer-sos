@@ -9,6 +9,8 @@ import com.example.explorersos.feature_trip.domain.use_case.TripUseCases
 import com.example.explorersos.feature_trip.domain.util.OrderType
 import com.example.explorersos.feature_trip.domain.util.TripOrder
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -18,7 +20,11 @@ class TripsViewModel(private val tripUseCases: TripUseCases) : ViewModel() {
     val state: State<TripsState> = _state
 
     private var recentlyDeletedTrip: Trip? = null
+    private var recentlyEndedTrip: Trip? = null
     private var getTripsJob: Job? = null
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     init {
         getTrips(TripOrder.Date(OrderType.Descending))
@@ -37,8 +43,14 @@ class TripsViewModel(private val tripUseCases: TripUseCases) : ViewModel() {
 
             is TripsEvent.DeleteTrip -> {
                 viewModelScope.launch {
-                    tripUseCases.deleteTrip(event.trip)
                     recentlyDeletedTrip = event.trip
+                    tripUseCases.deleteTrip(event.trip)
+                    _eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            message = "Trip deleted",
+                            action = "Undo"
+                        )
+                    )
                 }
             }
 
@@ -57,10 +69,23 @@ class TripsViewModel(private val tripUseCases: TripUseCases) : ViewModel() {
 
             is TripsEvent.EndTrip -> {
                 viewModelScope.launch {
+                    recentlyEndedTrip = event.trip
                     tripUseCases.addTrip(event.trip.copy(isActive = false))
+                    _eventFlow.emit(
+                        UiEvent.ShowSnackbar(
+                            message = "Trip ended",
+                            action = "Undo"
+                        )
+                    )
                 }
             }
-            
+
+            is TripsEvent.RestoreEndedTrip -> {
+                viewModelScope.launch {
+                    tripUseCases.addTrip(recentlyEndedTrip ?: return@launch)
+                    recentlyEndedTrip = null
+                }
+            }
         }
     }
 
@@ -75,4 +100,7 @@ class TripsViewModel(private val tripUseCases: TripUseCases) : ViewModel() {
 
     }
 
+    sealed class UiEvent {
+        data class ShowSnackbar(val message: String, val action: String? = null) : UiEvent()
+    }
 }
