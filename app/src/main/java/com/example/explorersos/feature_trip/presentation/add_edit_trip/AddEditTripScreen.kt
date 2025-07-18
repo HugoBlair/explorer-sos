@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.Save
@@ -66,7 +68,7 @@ fun AddEditTripScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collect { event ->
             when (event) {
-                is AddEditTripViewModel.UiEvent.ShowSnackbar -> {
+                is AddEditTripViewModel.UiEvent.ShowErrorSnackbar -> {
                     scope.launch {
                         snackbarHostState.showSnackbar(
                             message = event.message
@@ -74,7 +76,11 @@ fun AddEditTripScreen(
                     }
                 }
 
-                is AddEditTripViewModel.UiEvent.SaveTrip -> {
+                is AddEditTripViewModel.UiEvent.SaveTripSuccess -> {
+                    // Pass the result message back to the previous screen
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbar_message", event.message)
                     navController.navigateUp()
                 }
             }
@@ -122,13 +128,12 @@ fun AddEditTripScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
-            //TODO()
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
-
-
+                // Add vertical scroll to handle smaller screens or when keyboard is open
+                .verticalScroll(rememberScrollState())
         ) {
             //Title
             TransparentHintTextField(
@@ -144,6 +149,7 @@ fun AddEditTripScreen(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.headlineMedium
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Trip Description
             TransparentHintTextField(
@@ -157,8 +163,10 @@ fun AddEditTripScreen(
                 },
                 isHintVisible = descriptionState.isHintVisible,
                 textStyle = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.height(100.dp)
+                modifier = Modifier.height(100.dp),
+                singleLine = false // Allow multiple lines for description
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Round Trip Toggle
             Card(
@@ -197,6 +205,7 @@ fun AddEditTripScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Start Location
             PlacesAutocompleteTextField(
@@ -216,6 +225,7 @@ fun AddEditTripScreen(
                     viewModel.onEvent(AddEditTripEvent.SelectStartLocation(prediction))
                 }
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
             // End Location (only show if not round trip)
             if (!isRoundTrip) {
@@ -236,8 +246,9 @@ fun AddEditTripScreen(
                         viewModel.onEvent(AddEditTripEvent.SelectEndLocation(prediction))
                     }
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
-            Spacer(modifier = Modifier.height(16.dp))
+
 
             // Edit Start Date/Time (only visible when editing an existing trip)
             if (tripId != -1 && startDateTimeState.selectedDateTime != null) {
@@ -325,7 +336,8 @@ fun AddEditTripScreen(
                     }
                 }
             }
+            // Add spacer at the bottom to ensure content isn't hidden by the FAB
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
-    Spacer(modifier = Modifier.height(72.dp))
 }

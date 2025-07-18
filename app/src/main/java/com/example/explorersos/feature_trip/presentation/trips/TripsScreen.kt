@@ -19,18 +19,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -38,6 +41,7 @@ import androidx.navigation.NavController
 import com.example.explorersos.feature_trip.presentation.navigation.Routes.AddEditTripScreenRoute
 import com.example.explorersos.feature_trip.presentation.trips.components.OrderSection
 import com.example.explorersos.feature_trip.presentation.trips.components.TripItem
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
@@ -48,7 +52,47 @@ fun TripsScreen(
 ) {
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
-    rememberCoroutineScope()
+
+    // This effect handles showing snackbars from undoable actions (delete, end)
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is TripsViewModel.UiEvent.ShowSnackbar -> {
+                    val result = snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.action,
+                        duration = SnackbarDuration.Long
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        when (event.action) {
+                            "Undo" -> {
+                                if (event.message == "Trip deleted") {
+                                    viewModel.onEvent(TripsEvent.RestoreTrip)
+                                } else if (event.message == "Trip ended") {
+                                    viewModel.onEvent(TripsEvent.RestoreEndedTrip)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // This effect handles showing snackbars from one-off events (like saving a trip)
+    // by observing the result from the previous screen.
+    LaunchedEffect(key1 = true) {
+        val message = navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("snackbar_message")
+        if (message != null) {
+            snackbarHostState.showSnackbar(message)
+            // Clear the message so it doesn't appear again
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.remove<String>("snackbar_message")
+        }
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -79,6 +123,10 @@ fun TripsScreen(
                 Text(
                     text = "My Trips",
                     style = MaterialTheme.typography.headlineMedium
+                )
+                Icon(
+                    imageVector = Icons.Default.Layers,
+                    contentDescription = "Layers"
                 )
             }
 
@@ -158,7 +206,10 @@ fun TripsScreen(
                             navController.navigate(
                                 AddEditTripScreenRoute(tripId = trip.id ?: -1)
                             )
-                        }
+                        },
+                        //onDeleteClick = {
+                        //    viewModel.onEvent(TripsEvent.DeleteTrip(trip))
+                        //}
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }

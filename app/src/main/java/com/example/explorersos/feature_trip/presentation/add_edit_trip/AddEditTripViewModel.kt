@@ -84,9 +84,10 @@ class AddEditTripViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    // This sealed class is now simpler
     sealed class UiEvent {
-        data class ShowSnackbar(val message: String) : UiEvent()
-        object SaveTrip : UiEvent()
+        data class ShowErrorSnackbar(val message: String) : UiEvent()
+        data class SaveTripSuccess(val message: String) : UiEvent()
     }
 
     init {
@@ -304,17 +305,17 @@ class AddEditTripViewModel(
                                 description = if (tripDescription.value.text.isNotBlank()) tripDescription.value.text else ""
                             )
                         )
-                        val message = if (isActive.value) "Trip started!" else "Trip saved!"
-                        _eventFlow.emit(UiEvent.ShowSnackbar(message))
-                        _eventFlow.emit(UiEvent.SaveTrip)
+                        val message =
+                            if (isActive.value) "Trip started now!" else "Trip saved for later!"
+                        _eventFlow.emit(UiEvent.SaveTripSuccess(message)) // Emit success with a message
                     } catch (e: InvalidTripException) {
                         _eventFlow.emit(
-                            UiEvent.ShowSnackbar(
+                            UiEvent.ShowErrorSnackbar(
                                 message = e.message ?: "Couldn't save trip"
                             )
                         )
                     } catch (e: NullPointerException) {
-                        _eventFlow.emit(UiEvent.ShowSnackbar(message = "Please select an end date for your trip."))
+                        _eventFlow.emit(UiEvent.ShowErrorSnackbar(message = "Please select an end date for your trip."))
                     }
                 }
 
