@@ -42,4 +42,6 @@ sealed class AddEditTripEvent {
 
     // Action events
     object SaveTrip : AddEditTripEvent()
+    object DeleteTrip : AddEditTripEvent()
+
 }

@@ -88,14 +88,15 @@ class AddEditTripViewModel(
     sealed class UiEvent {
         data class ShowErrorSnackbar(val message: String) : UiEvent()
         data class SaveTripSuccess(val message: String) : UiEvent()
+        data class DeleteTripSuccess(val message: String) : UiEvent()
     }
 
     init {
         savedStateHandle.get<Int>("tripId")?.let { tripId ->
             if (tripId != -1) {
+                currentTripId = tripId // Store the ID
                 viewModelScope.launch {
                     tripUseCases.getTrip(tripId)?.also { trip ->
-                        currentTripId = trip.id
                         _tripTitle.value = tripTitle.value.copy(
                             text = trip.title,
                             isHintVisible = false
@@ -305,8 +306,7 @@ class AddEditTripViewModel(
                                 description = if (tripDescription.value.text.isNotBlank()) tripDescription.value.text else ""
                             )
                         )
-                        val message =
-                            if (isActive.value) "Trip started now!" else "Trip saved for later!"
+                        val message = if (isActive.value) "Trip started!" else "Trip saved!"
                         _eventFlow.emit(UiEvent.SaveTripSuccess(message)) // Emit success with a message
                     } catch (e: InvalidTripException) {
                         _eventFlow.emit(
@@ -319,6 +319,16 @@ class AddEditTripViewModel(
                     }
                 }
 
+            }
+
+            is AddEditTripEvent.DeleteTrip -> {
+                viewModelScope.launch {
+                    val tripIdToDelete = currentTripId ?: return@launch
+                    tripUseCases.getTrip(tripIdToDelete)?.let { tripToDelete ->
+                        tripUseCases.deleteTrip(tripToDelete)
+                        _eventFlow.emit(UiEvent.DeleteTripSuccess("Trip deleted"))
+                    }
+                }
             }
         }
     }
