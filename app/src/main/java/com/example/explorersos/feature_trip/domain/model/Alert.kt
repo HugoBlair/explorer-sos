@@ -16,7 +16,8 @@ data class Alert(
      * If true, this alert will also be triggered if any check-in is missed.
      */
     val triggerOnMissedCheckIn: Boolean = false,
-    val checkInMissedMessage: String? = null
+    val checkInMissedMessage: String? = null,
+    val createdAt: Long = System.currentTimeMillis()
 
 ) {
     init {
