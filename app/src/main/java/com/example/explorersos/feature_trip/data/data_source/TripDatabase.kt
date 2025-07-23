@@ -5,11 +5,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.explorersos.feature_trip.domain.model.Alert
 import com.example.explorersos.feature_trip.domain.model.AlertRecipient
+import com.example.explorersos.feature_trip.domain.model.CheckIn
 import com.example.explorersos.feature_trip.domain.model.Trip
 import com.example.explorersos.feature_trip.domain.util.RoomTypeConverters
 
 @Database(
-    entities = [Trip::class, Alert::class, AlertRecipient::class],
+    entities = [Trip::class, Alert::class, AlertRecipient::class, CheckIn::class],
     version = 1,
     exportSchema = false
 )
