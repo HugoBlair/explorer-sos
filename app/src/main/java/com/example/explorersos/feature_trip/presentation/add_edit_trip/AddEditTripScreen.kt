@@ -2,6 +2,7 @@ package com.example.explorersos.feature_trip.presentation.add_edit_trip
 
 import DateTimePicker
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -67,15 +68,52 @@ fun AddEditTripScreen(
     val startDateTimeState = viewModel.tripStartDateTime.value
     val endDateTimeState = viewModel.tripEndDateTime.value
     val isRoundTrip = viewModel.isRoundTrip.value
+    val hasUnsavedChanges by viewModel.hasUnsavedChanges
 
     val startLocationPredictions = viewModel.startLocationPredictions.value
     val endLocationPredictions = viewModel.endLocationPredictions.value
 
 
     val snackbarHostState = remember { SnackbarHostState() }
+    var showDiscardDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
+
+    // --- Back Navigation Handling ---
+    val onBackPress: () -> Unit = {
+        if (hasUnsavedChanges) {
+            showDiscardDialog = true
+        } else {
+            navController.navigateUp()
+        }
+    }
+
+    BackHandler(enabled = true, onBack = onBackPress)
+
+    if (showDiscardDialog) {
+        AlertDialog(
+            onDismissRequest = { showDiscardDialog = false },
+            title = { Text("Discard Changes?") },
+            text = { Text("If you go back, your changes will be lost.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDiscardDialog = false
+                        navController.navigateUp() // Proceed with navigation
+                    }
+                ) {
+                    Text("Discard")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDiscardDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+    // --- End Back Navigation Handling ---
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collect { event ->
@@ -133,9 +171,9 @@ fun AddEditTripScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (tripId == -1) "Add Trip" else "Edit Trip") },
+                title = { Text(if (tripId == -1) "New Trip" else "Edit Trip") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = onBackPress) { // Use our custom back handler
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"

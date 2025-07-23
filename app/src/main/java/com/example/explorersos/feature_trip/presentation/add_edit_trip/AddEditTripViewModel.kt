@@ -32,6 +32,7 @@ class AddEditTripViewModel(
 
 
     private var currentTripId: Int? = null
+    private var initialTrip: Trip? = null // To store the original state for comparison
 
     // Title
     private val _tripTitle = mutableStateOf(TripTextFieldState(hint = "Enter title..."))
@@ -80,6 +81,10 @@ class AddEditTripViewModel(
     private val _isRoundTrip = mutableStateOf(true)
     val isRoundTrip: State<Boolean> = _isRoundTrip
 
+    // New property to track unsaved changes
+    private val _hasUnsavedChanges = mutableStateOf(false)
+    val hasUnsavedChanges: State<Boolean> = _hasUnsavedChanges
+
     // Event flow for UI events
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -97,13 +102,14 @@ class AddEditTripViewModel(
                 currentTripId = tripId // Store the ID
                 viewModelScope.launch {
                     tripUseCases.getTrip(tripId)?.also { trip ->
+                        initialTrip = trip // Store the original trip state
                         _tripTitle.value = tripTitle.value.copy(
                             text = trip.title,
                             isHintVisible = false
                         )
                         _tripDescription.value = tripDescription.value.copy(
                             text = trip.description,
-                            isHintVisible = false
+                            isHintVisible = trip.description.isBlank()
                         )
                         _tripStartLocation.value = tripStartLocation.value.copy(
                             text = trip.startLocation,
@@ -166,6 +172,37 @@ class AddEditTripViewModel(
             predictionsState.value = emptyList()
         }
     }
+
+    private fun checkForUnsavedChanges() {
+        val initial = initialTrip
+
+        // If it's a new trip, changes exist if any key field is filled.
+        if (initial == null) {
+            _hasUnsavedChanges.value = tripTitle.value.text.isNotBlank() ||
+                    tripStartLocation.value.text.isNotBlank() ||
+                    tripDescription.value.text.isNotBlank()
+            return
+        }
+
+        // If it's an existing trip, compare current state to initial state.
+        val titleChanged = initial.title != tripTitle.value.text
+        val descriptionChanged = initial.description != tripDescription.value.text
+        val startLocationChanged = initial.startLocation != tripStartLocation.value.text
+
+        val endLocationChanged = if (isRoundTrip.value) {
+            initial.startLocation != initial.endLocation // It changed if it was NOT a round trip before.
+        } else {
+            initial.endLocation != tripEndLocation.value.text || initial.startLocation == initial.endLocation // It changed if it was a round trip or text is different.
+        }
+
+        val startDateTimeChanged = initial.startDateTime != tripStartDateTime.value.selectedDateTime
+        val endDateTimeChanged =
+            initial.expectedEndDateTime != tripEndDateTime.value.selectedDateTime
+
+        _hasUnsavedChanges.value = titleChanged || descriptionChanged || startLocationChanged ||
+                endLocationChanged || startDateTimeChanged || endDateTimeChanged
+    }
+
 
     // Events for handling UI interactions
     fun onEvent(event: AddEditTripEvent) {
@@ -331,5 +368,7 @@ class AddEditTripViewModel(
                 }
             }
         }
+        // Check for changes after every event.
+        checkForUnsavedChanges()
     }
 }
