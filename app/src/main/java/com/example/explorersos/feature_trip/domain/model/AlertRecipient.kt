@@ -26,7 +26,9 @@ data class AlertRecipient(
             throw InvalidAlertRecipientException("Invalid phone number format.")
         }
     }
+
+    class InvalidAlertRecipientException(message: String) : Exception(message)
 }
 
-class InvalidAlertRecipientException(message: String) : Exception(message)
+
 

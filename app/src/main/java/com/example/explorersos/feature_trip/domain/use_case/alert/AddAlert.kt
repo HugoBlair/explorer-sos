@@ -8,7 +8,6 @@ class AddAlert(
 ) {
     @Throws(Alert.InvalidAlertException::class)
     suspend operator fun invoke(alert: Alert) {
-
         repository.insertAlert(alert)
     }
 }
