@@ -12,6 +12,12 @@ data class Alert(
     val alertInstructions: String,
     val alertOrder: List<ContactMethod>,
     val recipientsId: List<Int>,
+    /**
+     * If true, this alert will also be triggered if any check-in is missed.
+     */
+    val triggerOnMissedCheckIn: Boolean = false,
+    val checkInMissedMessage: String? = null
+
 ) {
     init {
         if (alertMessage.isBlank()) {
