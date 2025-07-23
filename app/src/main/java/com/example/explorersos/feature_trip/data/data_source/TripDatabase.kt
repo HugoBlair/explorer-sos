@@ -18,6 +18,7 @@ import com.example.explorersos.feature_trip.domain.util.RoomTypeConverters
 abstract class TripDatabase : RoomDatabase() {
     abstract val tripDao: TripDao
     abstract val alertDao: AlertDao
+    abstract val alertRecipientDao: AlertRecipientDao
 
     companion object {
         const val DATABASE_NAME = "trips_db"

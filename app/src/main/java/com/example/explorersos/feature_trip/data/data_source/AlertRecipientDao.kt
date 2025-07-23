@@ -9,7 +9,7 @@ import com.example.explorersos.feature_trip.domain.model.AlertRecipient
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface AlertRecipientDAO {
+interface AlertRecipientDao {
     @Query("SELECT * FROM alertRecipient")
     fun getAlertRecipients(): Flow<List<AlertRecipient>>
 

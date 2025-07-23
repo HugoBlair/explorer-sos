@@ -1,11 +1,11 @@
 package com.example.explorersos.feature_trip.data.repository
 
-import com.example.explorersos.feature_trip.data.data_source.AlertRecipientDAO
+import com.example.explorersos.feature_trip.data.data_source.AlertRecipientDao
 import com.example.explorersos.feature_trip.domain.model.AlertRecipient
 import com.example.explorersos.feature_trip.domain.repository.AlertRecipientRepository
 import kotlinx.coroutines.flow.Flow
 
-class AlertRecipientRepositoryImpl(private val alertRecipientDao: AlertRecipientDAO) :
+class AlertRecipientRepositoryImpl(private val alertRecipientDao: AlertRecipientDao) :
     AlertRecipientRepository {
     override fun getAlertRecipients(): Flow<List<AlertRecipient>> {
         return alertRecipientDao.getAlertRecipients()
