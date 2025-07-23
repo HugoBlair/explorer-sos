@@ -9,8 +9,11 @@ val PHONE_REGEX = Regex("""^\+?(\d{1,3})?[-.\s]?(\(?\d{3}\)?[-.\s]?)?(\d[-.\s]?)
 @Entity
 data class AlertRecipient(
     @PrimaryKey val id: Int? = null,
+    val recipientFirstName: String,
+    val recipientLastName: String,
     val recipientEmail: String?,
-    val recipientPhone: String?
+    val recipientPhone: String?,
+    val recipientNotes: String?
 ) {
     init {
         if (recipientEmail.isNullOrBlank() && recipientPhone.isNullOrBlank()) {
