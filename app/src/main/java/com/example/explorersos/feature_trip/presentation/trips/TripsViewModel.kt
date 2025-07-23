@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.explorersos.feature_trip.domain.model.Trip
-import com.example.explorersos.feature_trip.domain.use_case.TripUseCases
+import com.example.explorersos.feature_trip.domain.use_case.trip.TripUseCases
 import com.example.explorersos.feature_trip.domain.util.OrderType
 import com.example.explorersos.feature_trip.domain.util.TripOrder
 import kotlinx.coroutines.Job

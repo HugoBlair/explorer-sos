@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.explorersos.feature_trip.domain.model.Trip
 import com.example.explorersos.feature_trip.domain.model.Trip.InvalidTripException
-import com.example.explorersos.feature_trip.domain.use_case.TripUseCases
+import com.example.explorersos.feature_trip.domain.use_case.trip.TripUseCases
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest

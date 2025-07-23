@@ -1,4 +1,4 @@
-package com.example.explorersos.feature_trip.domain.use_case
+package com.example.explorersos.feature_trip.domain.use_case.trip
 
 import com.example.explorersos.feature_trip.domain.model.Trip
 import com.example.explorersos.feature_trip.domain.repository.TripRepository

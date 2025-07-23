@@ -5,11 +5,11 @@ import com.example.explorersos.feature_trip.data.data_source.TripDao
 import com.example.explorersos.feature_trip.data.data_source.TripDatabase
 import com.example.explorersos.feature_trip.data.repository.TripRepositoryImpl
 import com.example.explorersos.feature_trip.domain.repository.TripRepository
-import com.example.explorersos.feature_trip.domain.use_case.AddTrip
-import com.example.explorersos.feature_trip.domain.use_case.DeleteTrip
-import com.example.explorersos.feature_trip.domain.use_case.GetTrip
-import com.example.explorersos.feature_trip.domain.use_case.GetTrips
-import com.example.explorersos.feature_trip.domain.use_case.TripUseCases
+import com.example.explorersos.feature_trip.domain.use_case.trip.AddTrip
+import com.example.explorersos.feature_trip.domain.use_case.trip.DeleteTrip
+import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrip
+import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrips
+import com.example.explorersos.feature_trip.domain.use_case.trip.TripUseCases
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.AddEditTripViewModel
 import com.example.explorersos.feature_trip.presentation.trips.TripsViewModel
 import com.google.android.libraries.places.api.Places

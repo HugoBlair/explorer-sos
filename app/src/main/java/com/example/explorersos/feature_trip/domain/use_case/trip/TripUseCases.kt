@@ -1,4 +1,4 @@
-package com.example.explorersos.feature_trip.domain.use_case
+package com.example.explorersos.feature_trip.domain.use_case.trip
 
 data class TripUseCases(
     val getTrips: GetTrips,
