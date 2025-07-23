@@ -19,6 +19,7 @@ abstract class TripDatabase : RoomDatabase() {
     abstract val tripDao: TripDao
     abstract val alertDao: AlertDao
     abstract val alertRecipientDao: AlertRecipientDao
+    abstract val checkInDao: CheckInDao
 
     companion object {
         const val DATABASE_NAME = "trips_db"
