@@ -1,10 +1,17 @@
 package com.example.explorersos.di
 
 import androidx.room.Room
+import com.example.explorersos.feature_trip.data.data_source.AlertDao
 import com.example.explorersos.feature_trip.data.data_source.TripDao
 import com.example.explorersos.feature_trip.data.data_source.TripDatabase
+import com.example.explorersos.feature_trip.data.repository.AlertRepositoryImpl
 import com.example.explorersos.feature_trip.data.repository.TripRepositoryImpl
+import com.example.explorersos.feature_trip.domain.repository.AlertRepository
 import com.example.explorersos.feature_trip.domain.repository.TripRepository
+import com.example.explorersos.feature_trip.domain.use_case.alert.AddAlert
+import com.example.explorersos.feature_trip.domain.use_case.alert.AlertUseCases
+import com.example.explorersos.feature_trip.domain.use_case.alert.DeleteAlert
+import com.example.explorersos.feature_trip.domain.use_case.alert.GetAlert
 import com.example.explorersos.feature_trip.domain.use_case.trip.AddTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.DeleteTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrip
@@ -28,15 +35,23 @@ val appModule = module {
         ).build()
     }
 
+
+
+
+
+
+    viewModel<TripsViewModel> { TripsViewModel(get()) }
+
+    viewModel<AddEditTripViewModel> { AddEditTripViewModel(get(), get(), get()) }
+
+    /**
+     * Trip data/model related dependencies
+     */
     single<TripDao> {
         get<TripDatabase>().tripDao
     }
 
     single<TripRepository> { TripRepositoryImpl(get<TripDao>()) }
-
-    viewModel<TripsViewModel> { TripsViewModel(get()) }
-
-    viewModel<AddEditTripViewModel> { AddEditTripViewModel(get(), get(), get()) }
 
     single<TripUseCases> {
         TripUseCases(
@@ -46,4 +61,23 @@ val appModule = module {
             getTrip = GetTrip(get<TripRepository>())
         )
     }
+
+    /**
+     * Alert data/model related dependencies
+     */
+    single<AlertDao> {
+        get<TripDatabase>().alertDao
+    }
+
+    single<AlertRepository> { AlertRepositoryImpl(get<AlertDao>()) }
+
+    single<AlertUseCases> {
+        AlertUseCases(
+            deleteAlert = DeleteAlert(get<AlertRepository>()),
+            addAlert = AddAlert(get<AlertRepository>()),
+            getAlert = GetAlert(get<AlertRepository>())
+        )
+    }
+
+
 }
