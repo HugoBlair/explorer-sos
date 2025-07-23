@@ -9,20 +9,20 @@ val PHONE_REGEX = Regex("""^\+?(\d{1,3})?[-.\s]?(\(?\d{3}\)?[-.\s]?)?(\d[-.\s]?)
 @Entity
 data class AlertRecipient(
     @PrimaryKey val id: Int? = null,
-    val recipientFirstName: String,
-    val recipientLastName: String,
-    val recipientEmail: String?,
-    val recipientPhone: String?,
-    val recipientNotes: String?
+    val firstName: String,
+    val lastName: String,
+    val email: String?,
+    val phone: String?,
+    val notes: String?
 ) {
     init {
-        if (recipientEmail.isNullOrBlank() && recipientPhone.isNullOrBlank()) {
+        if (email.isNullOrBlank() && phone.isNullOrBlank()) {
             throw InvalidAlertRecipientException("Either email or phone must be provided.")
         }
-        if (recipientEmail != null && !EMAIL_REGEX.matches(recipientEmail)) {
+        if (email != null && !EMAIL_REGEX.matches(email)) {
             throw InvalidAlertRecipientException("Invalid email format.")
         }
-        if (recipientPhone != null && !PHONE_REGEX.matches(recipientPhone)) {
+        if (phone != null && !PHONE_REGEX.matches(phone)) {
             throw InvalidAlertRecipientException("Invalid phone number format.")
         }
     }
