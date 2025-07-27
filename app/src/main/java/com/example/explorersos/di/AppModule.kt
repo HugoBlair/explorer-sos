@@ -41,8 +41,9 @@ val appModule = module {
             androidApplication(),
             TripDatabase::class.java,
             TripDatabase.DATABASE_NAME
-        ).fallbackToDestructiveMigration(true).build()
-        TODO("REMOVE FALLBACK TO DEStructive migration")
+        ).fallbackToDestructiveMigration(true).build().also {
+            println("Remove Fallback to destructive migration before pushing to prod")
+        }
     }
 
     viewModel<TripsViewModel> { TripsViewModel(get()) }
