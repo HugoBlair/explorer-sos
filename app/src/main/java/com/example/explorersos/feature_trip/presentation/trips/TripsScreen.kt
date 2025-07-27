@@ -39,8 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.explorersos.feature_trip.presentation.navigation.Routes.AddEditTripScreenRoute
-import com.example.explorersos.feature_trip.presentation.trips.components.OrderSection
 import com.example.explorersos.feature_trip.presentation.trips.components.TripItem
+import com.example.explorersos.feature_trip.presentation.trips.components.TripOrderSection
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -185,7 +185,7 @@ fun TripsScreen(
                         enter = fadeIn() + slideInVertically(),
                         exit = fadeOut() + slideOutVertically()
                     ) {
-                        OrderSection(
+                        TripOrderSection(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 16.dp, horizontal = 16.dp),

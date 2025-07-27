@@ -12,7 +12,7 @@ import com.example.explorersos.feature_trip.domain.util.OrderType
 import com.example.explorersos.feature_trip.domain.util.TripOrder
 
 @Composable
-fun OrderSection(
+fun TripOrderSection(
     modifier: Modifier = Modifier,
     tripOrder: TripOrder = TripOrder.Date(OrderType.Descending),
     onOrderChange: (TripOrder) -> Unit
