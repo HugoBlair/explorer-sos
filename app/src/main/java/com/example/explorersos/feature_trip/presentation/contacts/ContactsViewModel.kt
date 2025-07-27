@@ -31,7 +31,7 @@ class ContactsViewModel(private val contactUseCases: ContactUseCases) : ViewMode
 
     }
 
-    private fun onEvent(event: ContactsEvent) {
+    fun onEvent(event: ContactsEvent) {
         when (event) {
             is ContactsEvent.Order -> {
                 if (state.value.contactOrder::class == event.contactOrder::class &&
