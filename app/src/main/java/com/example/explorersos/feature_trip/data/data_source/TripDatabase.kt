@@ -4,13 +4,13 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.explorersos.feature_trip.domain.model.Alert
-import com.example.explorersos.feature_trip.domain.model.AlertRecipient
 import com.example.explorersos.feature_trip.domain.model.CheckIn
+import com.example.explorersos.feature_trip.domain.model.Contact
 import com.example.explorersos.feature_trip.domain.model.Trip
 import com.example.explorersos.feature_trip.domain.util.RoomTypeConverters
 
 @Database(
-    entities = [Trip::class, Alert::class, AlertRecipient::class, CheckIn::class],
+    entities = [Trip::class, Alert::class, Contact::class, CheckIn::class],
     version = 1,
     exportSchema = false
 )
@@ -19,7 +19,7 @@ import com.example.explorersos.feature_trip.domain.util.RoomTypeConverters
 abstract class TripDatabase : RoomDatabase() {
     abstract val tripDao: TripDao
     abstract val alertDao: AlertDao
-    abstract val alertRecipientDao: AlertRecipientDao
+    abstract val contactDao: ContactDao
     abstract val checkInDao: CheckInDao
 
     companion object {

@@ -1,10 +1,10 @@
 package com.example.explorersos.feature_trip.domain.util
 
-sealed class AlertRecipientOrder(val orderType: OrderType) {
-    class FirstName(orderType: OrderType) : AlertRecipientOrder(orderType)
-    class LastName(orderType: OrderType) : AlertRecipientOrder(orderType)
+sealed class ContactOrder(val orderType: OrderType) {
+    class FirstName(orderType: OrderType) : ContactOrder(orderType)
+    class LastName(orderType: OrderType) : ContactOrder(orderType)
 
-    fun copy(orderType: OrderType): AlertRecipientOrder {
+    fun copy(orderType: OrderType): ContactOrder {
         return when (this) {
             is FirstName -> FirstName(orderType)
             is LastName -> LastName(orderType)

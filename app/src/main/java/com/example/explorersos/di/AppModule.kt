@@ -1,26 +1,26 @@
 package com.example.explorersos.di
 
 import androidx.room.Room
-import com.example.explorersos.feature_alertrecipient.domain.use_case.alert_recipient.GetAlertRecipients
+import com.example.explorersos.feature_contact.domain.use_case.alert_recipient.GetContacts
 import com.example.explorersos.feature_trip.data.data_source.AlertDao
-import com.example.explorersos.feature_trip.data.data_source.AlertRecipientDao
+import com.example.explorersos.feature_trip.data.data_source.ContactDao
 import com.example.explorersos.feature_trip.data.data_source.TripDao
 import com.example.explorersos.feature_trip.data.data_source.TripDatabase
-import com.example.explorersos.feature_trip.data.repository.AlertRecipientRepositoryImpl
 import com.example.explorersos.feature_trip.data.repository.AlertRepositoryImpl
+import com.example.explorersos.feature_trip.data.repository.ContactRepositoryImpl
 import com.example.explorersos.feature_trip.data.repository.TripRepositoryImpl
-import com.example.explorersos.feature_trip.domain.repository.AlertRecipientRepository
 import com.example.explorersos.feature_trip.domain.repository.AlertRepository
+import com.example.explorersos.feature_trip.domain.repository.ContactRepository
 import com.example.explorersos.feature_trip.domain.repository.TripRepository
 import com.example.explorersos.feature_trip.domain.use_case.alert.AddAlert
 import com.example.explorersos.feature_trip.domain.use_case.alert.AlertUseCases
 import com.example.explorersos.feature_trip.domain.use_case.alert.DeleteAlert
 import com.example.explorersos.feature_trip.domain.use_case.alert.GetAlert
 import com.example.explorersos.feature_trip.domain.use_case.alert.GetAlerts
-import com.example.explorersos.feature_trip.domain.use_case.alert_recipient.AddAlertRecipient
-import com.example.explorersos.feature_trip.domain.use_case.alert_recipient.AlertRecipientUseCases
-import com.example.explorersos.feature_trip.domain.use_case.alert_recipient.DeleteAlertRecipient
-import com.example.explorersos.feature_trip.domain.use_case.alert_recipient.GetAlertRecipient
+import com.example.explorersos.feature_trip.domain.use_case.contact.AddContact
+import com.example.explorersos.feature_trip.domain.use_case.contact.ContactUseCases
+import com.example.explorersos.feature_trip.domain.use_case.contact.DeleteContact
+import com.example.explorersos.feature_trip.domain.use_case.contact.GetContact
 import com.example.explorersos.feature_trip.domain.use_case.trip.AddTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.DeleteTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrip
@@ -86,20 +86,20 @@ val appModule = module {
     }
 
     /**
-     * AlertRecipient data/model related dependencies
+     * Contact data/model related dependencies
      */
-    single<AlertRecipientDao> {
-        get<TripDatabase>().alertRecipientDao
+    single<ContactDao> {
+        get<TripDatabase>().contactDao
     }
 
-    single<AlertRecipientRepository> { AlertRecipientRepositoryImpl(get<AlertRecipientDao>()) }
+    single<ContactRepository> { ContactRepositoryImpl(get<ContactDao>()) }
 
-    single<AlertRecipientUseCases> {
-        AlertRecipientUseCases(
-            getAlertRecipients = GetAlertRecipients(get<AlertRecipientRepository>()),
-            deleteAlertRecipient = DeleteAlertRecipient(get<AlertRecipientRepository>()),
-            addAlertRecipient = AddAlertRecipient(get<AlertRecipientRepository>()),
-            getAlertRecipient = GetAlertRecipient(get<AlertRecipientRepository>())
+    single<ContactUseCases> {
+        ContactUseCases(
+            getContacts = GetContacts(get<ContactRepository>()),
+            deleteContact = DeleteContact(get<ContactRepository>()),
+            addContact = AddContact(get<ContactRepository>()),
+            getContact = GetContact(get<ContactRepository>())
         )
     }
 

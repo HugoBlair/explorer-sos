@@ -7,7 +7,7 @@ val EMAIL_REGEX = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")
 val PHONE_REGEX = Regex("""^\+?(\d{1,3})?[-.\s]?(\(?\d{3}\)?[-.\s]?)?(\d[-.\s]?){6,9}\d$""")
 
 @Entity
-data class AlertRecipient(
+data class Contact(
     @PrimaryKey val id: Int? = null,
     val firstName: String,
     val lastName: String,
@@ -17,17 +17,17 @@ data class AlertRecipient(
 ) {
     init {
         if (email.isNullOrBlank() && phone.isNullOrBlank()) {
-            throw InvalidAlertRecipientException("Either email or phone must be provided.")
+            throw InvalidContactException("Either email or phone must be provided.")
         }
         if (email != null && !EMAIL_REGEX.matches(email)) {
-            throw InvalidAlertRecipientException("Invalid email format.")
+            throw InvalidContactException("Invalid email format.")
         }
         if (phone != null && !PHONE_REGEX.matches(phone)) {
-            throw InvalidAlertRecipientException("Invalid phone number format.")
+            throw InvalidContactException("Invalid phone number format.")
         }
     }
 
-    class InvalidAlertRecipientException(message: String) : Exception(message)
+    class InvalidContactException(message: String) : Exception(message)
 }
 
 

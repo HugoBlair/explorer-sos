@@ -10,6 +10,4 @@ sealed class TripsEvent {
     object ToggleOrderSection : TripsEvent()
     data class EndTrip(val trip: Trip) : TripsEvent()
     object RestoreEndedTrip : TripsEvent()
-
-
 }
