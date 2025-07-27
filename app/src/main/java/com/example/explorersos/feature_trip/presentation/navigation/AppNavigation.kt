@@ -9,9 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.AddEditTripScreen
 import com.example.explorersos.feature_trip.presentation.contacts.ContactsScreen
-import com.example.explorersos.feature_trip.presentation.navigation.Routes.ContactsScreenRoute
-import com.example.explorersos.feature_trip.presentation.navigation.Routes.SettingsScreenRoute
-import com.example.explorersos.feature_trip.presentation.navigation.Routes.TripsScreenRoute
 import com.example.explorersos.feature_trip.presentation.settings.SettingsScreen
 import com.example.explorersos.feature_trip.presentation.trips.TripsScreen
 import org.koin.androidx.compose.koinViewModel
@@ -21,10 +18,10 @@ import org.koin.androidx.compose.koinViewModel
 fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = TripsScreenRoute,
+        startDestination = Routes.TripsScreenRoute,
         modifier = modifier
     ) {
-        composable<TripsScreenRoute> {
+        composable<Routes.TripsScreenRoute> {
             TripsScreen(
                 navController = navController,
                 viewModel = koinViewModel()
@@ -40,12 +37,13 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
             )
         }
 
-        composable<ContactsScreenRoute> {
-            ContactsScreen()
+        composable<Routes.ContactsScreenRoute> {
+            ContactsScreen(navController = navController, viewModel = koinViewModel())
         }
 
-        composable<SettingsScreenRoute> {
+        composable<Routes.SettingsScreenRoute> {
             SettingsScreen()
         }
+
     }
 }
