@@ -4,19 +4,19 @@ import androidx.compose.ui.focus.FocusState
 
 sealed class AddEditContactEvent {
     data class EnteredFirstName(val value: String) : AddEditContactEvent()
-    data class ChangedFirstNameFocus(val focusState: FocusState) : AddEditContactEvent()
+    data class ChangeFirstNameFocus(val focusState: FocusState) : AddEditContactEvent()
 
     data class EnteredLastName(val value: String) : AddEditContactEvent()
-    data class ChangedLastNameFocus(val focusState: FocusState) : AddEditContactEvent()
+    data class ChangeLastNameFocus(val focusState: FocusState) : AddEditContactEvent()
 
     data class EnteredPhoneNumber(val value: String) : AddEditContactEvent()
-    data class ChangedPhoneNumberFocus(val focusState: FocusState) : AddEditContactEvent()
+    data class ChangePhoneNumberFocus(val focusState: FocusState) : AddEditContactEvent()
 
     data class EnteredEmail(val value: String) : AddEditContactEvent()
-    data class ChangedEmailFocus(val focusState: FocusState) : AddEditContactEvent()
+    data class ChangeEmailFocus(val focusState: FocusState) : AddEditContactEvent()
 
     data class EnteredNotes(val value: String) : AddEditContactEvent()
-    data class ChangedNotesFocus(val focusState: FocusState) : AddEditContactEvent()
+    data class ChangeNotesFocus(val focusState: FocusState) : AddEditContactEvent()
 
     object SaveContact : AddEditContactEvent()
 

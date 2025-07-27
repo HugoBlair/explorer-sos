@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.explorersos.feature_trip.presentation.add_edit_contact.AddEditContactScreen
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.AddEditTripScreen
 import com.example.explorersos.feature_trip.presentation.contacts.ContactsScreen
 import com.example.explorersos.feature_trip.presentation.settings.SettingsScreen
@@ -40,6 +41,15 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
         composable<Routes.ContactsScreenRoute> {
             ContactsScreen(navController = navController, viewModel = koinViewModel())
         }
+
+        composable<Routes.AddEditContactScreenRoute> { backStackEntry ->
+            AddEditContactScreen(
+                navController = navController,
+                viewModel = koinViewModel(),
+            )
+        }
+            
+
 
         composable<Routes.SettingsScreenRoute> {
             SettingsScreen()

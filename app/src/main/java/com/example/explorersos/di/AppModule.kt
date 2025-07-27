@@ -26,7 +26,9 @@ import com.example.explorersos.feature_trip.domain.use_case.trip.DeleteTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrips
 import com.example.explorersos.feature_trip.domain.use_case.trip.TripUseCases
+import com.example.explorersos.feature_trip.presentation.add_edit_contact.AddEditContactViewModel
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.AddEditTripViewModel
+import com.example.explorersos.feature_trip.presentation.contacts.ContactsViewModel
 import com.example.explorersos.feature_trip.presentation.trips.TripsViewModel
 import com.google.android.libraries.places.api.Places
 import org.koin.android.ext.koin.androidApplication
@@ -41,18 +43,19 @@ val appModule = module {
             androidApplication(),
             TripDatabase::class.java,
             TripDatabase.DATABASE_NAME
-        ).fallbackToDestructiveMigration(true).build().also {
-            println("Remove Fallback to destructive migration before pushing to prod")
-        }
+        ).fallbackToDestructiveMigration(true).build()
+
     }
 
-    viewModel<TripsViewModel> { TripsViewModel(get()) }
-
     viewModel<AddEditTripViewModel> { AddEditTripViewModel(get(), get(), get()) }
+    viewModel<AddEditContactViewModel> { AddEditContactViewModel(get(), get()) }
+
 
     /**
      * Trip data/model related dependencies
      */
+    viewModel<TripsViewModel> { TripsViewModel(get()) }
+
     single<TripDao> {
         get<TripDatabase>().tripDao
     }
@@ -89,6 +92,9 @@ val appModule = module {
     /**
      * Contact data/model related dependencies
      */
+    viewModel<ContactsViewModel> { ContactsViewModel(get()) }
+
+
     single<ContactDao> {
         get<TripDatabase>().contactDao
     }

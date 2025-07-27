@@ -17,7 +17,7 @@ class AddEditContactViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _firstName = mutableStateOf(ContactTextFieldState(hint = "Enter first name"))
-    private val firstName: State<ContactTextFieldState> = _firstName
+    val firstName: State<ContactTextFieldState> = _firstName
 
     private val _lastName = mutableStateOf(ContactTextFieldState(hint = "Enter last name"))
     val lastName: State<ContactTextFieldState> = _lastName
@@ -70,98 +70,99 @@ class AddEditContactViewModel(
                 }
             }
         }
+    }
 
-        fun onEvent(event: AddEditContactEvent) {
-            when (event) {
-                is AddEditContactEvent.EnteredFirstName -> {
-                    _firstName.value = firstName.value.copy(
-                        text = event.value
-                    )
-                }
-
-                is AddEditContactEvent.ChangedFirstNameFocus -> {
-                    _firstName.value = firstName.value.copy(
-                        isHintVisible = !event.focusState.isFocused &&
-                                firstName.value.text.isBlank()
-                    )
-                }
-
-                is AddEditContactEvent.EnteredLastName -> {
-                    _lastName.value = lastName.value.copy(
-                        text = event.value
-                    )
-                }
-
-                is AddEditContactEvent.ChangedLastNameFocus -> {
-                    _lastName.value = lastName.value.copy(
-                        isHintVisible = !event.focusState.isFocused &&
-                                lastName.value.text.isBlank()
-                    )
-                }
-
-                is AddEditContactEvent.EnteredPhoneNumber -> {
-                    _phoneNumber.value = phoneNumber.value.copy(
-                        text = event.value
-                    )
-                }
-
-                is AddEditContactEvent.ChangedPhoneNumberFocus -> {
-                    _phoneNumber.value = phoneNumber.value.copy(
-                        isHintVisible = !event.focusState.isFocused &&
-                                phoneNumber.value.text.isBlank()
-                    )
-                }
-
-                is AddEditContactEvent.EnteredEmail -> {
-                    _email.value = email.value.copy(
-                        text = event.value
-                    )
-                }
-
-                is AddEditContactEvent.ChangedEmailFocus -> {
-                    _email.value = email.value.copy(
-                        isHintVisible = !event.focusState.isFocused &&
-                                email.value.text.isBlank()
-                    )
-                }
-
-                is AddEditContactEvent.EnteredNotes -> {
-                    _notes.value = notes.value.copy(
-                        text = event.value
-                    )
-                }
-
-                is AddEditContactEvent.ChangedNotesFocus -> {
-                    _notes.value = notes.value.copy(
-                        isHintVisible = !event.focusState.isFocused &&
-                                notes.value.text.isBlank()
-                    )
-                }
-
-                is AddEditContactEvent.SaveContact -> {
-                    viewModelScope.launch {
-                        try {
-                            useCases.addContact(
-                                Contact(
-                                    firstName = firstName.value.text,
-                                    lastName = lastName.value.text,
-                                    phone = phoneNumber.value.text,
-                                    email = email.value.text,
-                                    notes = notes.value.text
-                                )
-                            )
-                            _eventFlow.emit(UiEvent.SaveContactSuccess)
-                        } catch (e: InvalidContactException) {
-                            _eventFlow.emit(
-                                UiEvent.ShowErrorSnackbar(
-                                    message = e.message ?: "Couldn't save contact"
-                                )
-                            )
-                        }
-                    }
-
-                }
+    fun onEvent(event: AddEditContactEvent) {
+        when (event) {
+            is AddEditContactEvent.EnteredFirstName -> {
+                _firstName.value = firstName.value.copy(
+                    text = event.value
+                )
             }
+
+            is AddEditContactEvent.ChangeFirstNameFocus -> {
+                _firstName.value = firstName.value.copy(
+                    isHintVisible = !event.focusState.isFocused &&
+                            firstName.value.text.isBlank()
+                )
+            }
+
+            is AddEditContactEvent.EnteredLastName -> {
+                _lastName.value = lastName.value.copy(
+                    text = event.value
+                )
+            }
+
+            is AddEditContactEvent.ChangeLastNameFocus -> {
+                _lastName.value = lastName.value.copy(
+                    isHintVisible = !event.focusState.isFocused &&
+                            lastName.value.text.isBlank()
+                )
+            }
+
+            is AddEditContactEvent.EnteredPhoneNumber -> {
+                _phoneNumber.value = phoneNumber.value.copy(
+                    text = event.value
+                )
+            }
+
+            is AddEditContactEvent.ChangePhoneNumberFocus -> {
+                _phoneNumber.value = phoneNumber.value.copy(
+                    isHintVisible = !event.focusState.isFocused &&
+                            phoneNumber.value.text.isBlank()
+                )
+            }
+
+            is AddEditContactEvent.EnteredEmail -> {
+                _email.value = email.value.copy(
+                    text = event.value
+                )
+            }
+
+            is AddEditContactEvent.ChangeEmailFocus -> {
+                _email.value = email.value.copy(
+                    isHintVisible = !event.focusState.isFocused &&
+                            email.value.text.isBlank()
+                )
+            }
+
+            is AddEditContactEvent.EnteredNotes -> {
+                _notes.value = notes.value.copy(
+                    text = event.value
+                )
+            }
+
+            is AddEditContactEvent.ChangeNotesFocus -> {
+                _notes.value = notes.value.copy(
+                    isHintVisible = !event.focusState.isFocused &&
+                            notes.value.text.isBlank()
+                )
+            }
+
+            is AddEditContactEvent.SaveContact -> {
+                viewModelScope.launch {
+                    try {
+                        useCases.addContact(
+                            Contact(
+                                firstName = firstName.value.text,
+                                lastName = lastName.value.text,
+                                phone = phoneNumber.value.text,
+                                email = email.value.text,
+                                notes = notes.value.text
+                            )
+                        )
+                        _eventFlow.emit(UiEvent.SaveContactSuccess)
+                    } catch (e: InvalidContactException) {
+                        _eventFlow.emit(
+                            UiEvent.ShowErrorSnackbar(
+                                message = e.message ?: "Couldn't save contact"
+                            )
+                        )
+                    }
+                }
+
+            }
+
         }
 
 
