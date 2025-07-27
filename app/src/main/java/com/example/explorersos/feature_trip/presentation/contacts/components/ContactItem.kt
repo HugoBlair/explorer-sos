@@ -40,6 +40,7 @@ fun ContactItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            ContactAvatar(firstName = contact.firstName, lastName = contact.lastName)
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "${contact.firstName} ${contact.lastName}",

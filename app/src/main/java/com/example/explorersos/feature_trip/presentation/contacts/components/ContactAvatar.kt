@@ -1,0 +1,52 @@
+package com.example.explorersos.feature_trip.presentation.contacts.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+
+@Composable
+fun ContactAvatar(
+    firstName: String,
+    lastName: String,
+    modifier: Modifier = Modifier
+) {
+    // Generate initials from the name
+    val initials = buildString {
+        if (firstName.isNotBlank()) append(firstName.first().uppercaseChar())
+        if (lastName.isNotBlank()) append(lastName.first().uppercaseChar())
+    }
+
+    // Combine names for consistent hashing
+    val fullName = "$firstName $lastName"
+
+    // Generate a stable color from the name's hash code
+    val backgroundColor = remember(fullName) {
+        val hash = fullName.hashCode()
+        Color(
+            red = (hash and 0xFF0000 shr 16) / 255f,
+            green = (hash and 0x00FF00 shr 8) / 255f,
+            blue = (hash and 0x0000FF) / 255f
+        ).copy(alpha = 0.5f) // Use alpha to get softer, pastel-like colors
+    }
+
+    Box(
+        modifier = modifier
+            .background(color = backgroundColor, shape = CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = initials,
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+}
