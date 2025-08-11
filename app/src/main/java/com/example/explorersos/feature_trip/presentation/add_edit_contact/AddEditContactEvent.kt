@@ -19,5 +19,7 @@ sealed class AddEditContactEvent {
     data class ChangeNotesFocus(val focusState: FocusState) : AddEditContactEvent()
 
     object SaveContact : AddEditContactEvent()
+    object DeleteContact : AddEditContactEvent()
+
 
 }
