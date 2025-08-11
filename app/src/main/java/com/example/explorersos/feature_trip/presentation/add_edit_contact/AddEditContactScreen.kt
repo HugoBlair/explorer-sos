@@ -1,22 +1,35 @@
+// hugoblair-explorer-sos/app/src/main/java/com/example/explorersos/feature_trip/presentation/add_edit_contact/AddEditContactScreen.kt
 package com.example.explorersos.feature_trip.presentation.add_edit_contact
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -27,15 +40,67 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AddEditContactScreen(
     navController: NavController,
-    viewModel: AddEditContactViewModel = koinViewModel()
+    viewModel: AddEditContactViewModel = koinViewModel(),
+    contactId: Int = -1
 ) {
     val firstNameState = viewModel.firstName.value
     val lastNameState = viewModel.lastName.value
     val emailState = viewModel.email.value
     val phoneState = viewModel.phoneNumber.value
     val notesState = viewModel.notes.value
+    val hasUnsavedChanges by viewModel.hasUnsavedChanges
 
     val snackbarHostState = remember { SnackbarHostState() }
+    var showDiscardDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    val onBackPress: () -> Unit = {
+        if (hasUnsavedChanges) {
+            showDiscardDialog = true
+        } else {
+            navController.navigateUp()
+        }
+    }
+
+    BackHandler(enabled = true, onBack = onBackPress)
+
+    if (showDiscardDialog) {
+        AlertDialog(
+            onDismissRequest = { showDiscardDialog = false },
+            title = { Text("Discard Changes?") },
+            text = { Text("If you go back, your changes will be lost.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDiscardDialog = false
+                        navController.navigateUp()
+                    }
+                ) { Text("Discard") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDiscardDialog = false }) { Text("Cancel") }
+            }
+        )
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Delete Contact?") },
+            text = { Text("Are you sure you want to permanently delete this contact?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.onEvent(AddEditContactEvent.DeleteContact)
+                        showDeleteDialog = false
+                    }
+                ) { Text("Delete") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
+            }
+        )
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collect { event ->
@@ -45,6 +110,16 @@ fun AddEditContactScreen(
                 }
 
                 is AddEditContactViewModel.UiEvent.SaveContactSuccess -> {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbar_message", event.message)
+                    navController.navigateUp()
+                }
+
+                is AddEditContactViewModel.UiEvent.DeleteContactSuccess -> {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("snackbar_message", event.message)
                     navController.navigateUp()
                 }
             }
@@ -52,6 +127,23 @@ fun AddEditContactScreen(
     }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(if (contactId == -1) "New Contact" else "Edit Contact") },
+                navigationIcon = {
+                    IconButton(onClick = onBackPress) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    if (contactId != -1) {
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete Contact")
+                        }
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { viewModel.onEvent(AddEditContactEvent.SaveContact) },
