@@ -1,7 +1,6 @@
 package com.example.explorersos.di
 
 import androidx.room.Room
-import com.example.explorersos.feature_contact.domain.use_case.alert_recipient.GetContacts
 import com.example.explorersos.feature_trip.data.data_source.AlertDao
 import com.example.explorersos.feature_trip.data.data_source.ContactDao
 import com.example.explorersos.feature_trip.data.data_source.TripDao
@@ -21,6 +20,7 @@ import com.example.explorersos.feature_trip.domain.use_case.contact.AddContact
 import com.example.explorersos.feature_trip.domain.use_case.contact.ContactUseCases
 import com.example.explorersos.feature_trip.domain.use_case.contact.DeleteContact
 import com.example.explorersos.feature_trip.domain.use_case.contact.GetContact
+import com.example.explorersos.feature_trip.domain.use_case.contact.GetContacts
 import com.example.explorersos.feature_trip.domain.use_case.trip.AddTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.DeleteTrip
 import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrip

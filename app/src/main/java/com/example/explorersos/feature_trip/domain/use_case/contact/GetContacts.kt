@@ -1,4 +1,4 @@
-package com.example.explorersos.feature_contact.domain.use_case.alert_recipient
+package com.example.explorersos.feature_trip.domain.use_case.contact
 
 import com.example.explorersos.feature_trip.domain.model.Contact
 import com.example.explorersos.feature_trip.domain.repository.ContactRepository
