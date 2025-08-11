@@ -6,11 +6,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntSize
 
 @Composable
 fun ContactAvatar(
@@ -37,8 +43,21 @@ fun ContactAvatar(
         ).copy(alpha = 0.5f) // Use alpha to get softer, pastel-like colors
     }
 
+    var size by remember { mutableStateOf(IntSize.Zero) }
+
+    // Calculate the font size based on the measured width of the Box.
+    // The font size will update whenever the measured size changes.
+    val fontSize = with(LocalDensity.current) {
+        // A divisor of 2.5 provides a good visual balance for 1-2 initials.
+        (size.width / 2.5f).toSp()
+    }
+
     Box(
         modifier = modifier
+            .onSizeChanged {
+                // When the Box's size is determined, update our state.
+                size = it
+            }
             .background(color = backgroundColor, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
@@ -46,7 +65,8 @@ fun ContactAvatar(
             text = initials,
             color = Color.White,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleMedium
+            // The calculated, responsive font size is applied here.
+            style = MaterialTheme.typography.titleMedium.copy(fontSize = fontSize)
         )
     }
 }

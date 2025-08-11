@@ -1,13 +1,19 @@
+// hugoblair-explorer-sos/app/src/main/java/com/example/explorersos/feature_trip/presentation/contacts/components/ContactItem.kt
+
 package com.example.explorersos.feature_trip.presentation.contacts.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -36,19 +42,32 @@ fun ContactItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            ContactAvatar(firstName = contact.firstName, lastName = contact.lastName)
+            ContactAvatar(
+                firstName = contact.firstName,
+                lastName = contact.lastName,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "${contact.firstName} ${contact.lastName}",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(text = contact.email ?: "", style = MaterialTheme.typography.bodyMedium)
-                Text(text = contact.phone ?: "", style = MaterialTheme.typography.bodyMedium)
+                if (contact.email?.isNotBlank() == true) {
+                    Text(text = contact.email, style = MaterialTheme.typography.bodyMedium)
+                }
+                if (contact.phone?.isNotBlank() == true) {
+                    Text(text = contact.phone, style = MaterialTheme.typography.bodyMedium)
+                }
             }
             IconButton(onClick = onDeleteClick) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete Contact")
