@@ -1,3 +1,4 @@
+// hugoblair-explorer-sos/app/src/main/java/com/example/explorersos/feature_trip/presentation/contacts/ContactsScreen.kt
 package com.example.explorersos.feature_trip.presentation.contacts
 
 import androidx.compose.animation.AnimatedVisibility
@@ -48,6 +49,7 @@ fun ContactsScreen(
     val state = viewModel.state.value
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Handles snackbars for undoable actions (e.g., delete)
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collect { event ->
             if (event is ContactsViewModel.UiEvent.ShowSnackbar) {
@@ -60,6 +62,19 @@ fun ContactsScreen(
                     viewModel.onEvent(ContactsEvent.RestoreContact)
                 }
             }
+        }
+    }
+
+    // Handles snackbars for one-off events (e.g., save/delete from edit screen)
+    LaunchedEffect(key1 = true) {
+        val message = navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("snackbar_message")
+        if (message != null) {
+            snackbarHostState.showSnackbar(message)
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.remove<String>("snackbar_message")
         }
     }
 
