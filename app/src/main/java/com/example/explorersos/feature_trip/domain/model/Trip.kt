@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.explorersos.feature_trip.domain.util.DateTimeUtils.getFormattedDisplayTime
 import java.time.Instant
-import java.time.ZonedDateTime
 
 @Entity
 data class Trip(
@@ -16,7 +15,7 @@ data class Trip(
     val expectedEndDateTime: Instant,
     val isActive: Boolean = false,
     val description: String = "",
-    val createdAt: String = ZonedDateTime.now().toString(),
+    val createdAt: Instant = Instant.now(),
     val alertId: Int? = null // FK to Alert table
 
 ) {
@@ -39,7 +38,7 @@ data class Trip(
         if (startDateTime.isAfter(expectedEndDateTime)) {
             throw InvalidTripException("Start date cannot be after end date.")
         }
-        if (createdAt > ZonedDateTime.now().toString()) {
+        if (createdAt.isAfter(Instant.now())) {
             throw InvalidTripException("Created at cannot be in the future.")
         }
         if (alertId != null && alertId < 0) {

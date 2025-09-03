@@ -125,7 +125,7 @@ fun TripItem(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = DateTimeUtils.getRelativeTimeString(trip.createdAt),
+                        text = DateTimeUtils.getRelativeTimeString(trip.createdAt.toString()),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
