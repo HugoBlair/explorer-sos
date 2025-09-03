@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.explorersos.ui.theme.ExplorerSOSTheme
+import org.koin.androidx.compose.KoinAndroidContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,8 +13,10 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            ExplorerSOSTheme {
-                MainScreen()
+            KoinAndroidContext {
+                ExplorerSOSTheme {
+                    MainScreen()
+                }
             }
         }
     }
