@@ -22,4 +22,14 @@ sealed class Routes {
     data class AddEditContactScreenRoute(
         val contactId: Int = -1
     )
+
+    @Serializable
+    data class AddEditAlertScreenRoute(
+        val alertId: Int = -1
+    )
+    
+    @Serializable
+    data object AlertsScreenRoute : Routes()
+
+
 }
