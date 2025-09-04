@@ -7,6 +7,7 @@ import com.example.explorersos.feature_trip.domain.util.ContactMethod
 @Entity
 data class Alert(
     @PrimaryKey val id: Int? = null,
+    val alertName: String,
     val alertMessage: String,
     val alertHoursAfter: Int = 24,
     val alertInstructions: String,
