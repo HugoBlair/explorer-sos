@@ -28,6 +28,7 @@ import com.example.explorersos.feature_trip.domain.use_case.trip.GetTrips
 import com.example.explorersos.feature_trip.domain.use_case.trip.TripUseCases
 import com.example.explorersos.feature_trip.presentation.add_edit_contact.AddEditContactViewModel
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.AddEditTripViewModel
+import com.example.explorersos.feature_trip.presentation.alerts.AlertsViewModel
 import com.example.explorersos.feature_trip.presentation.contacts.ContactsViewModel
 import com.example.explorersos.feature_trip.presentation.trips.TripsViewModel
 import com.google.android.libraries.places.api.Places
@@ -74,6 +75,8 @@ val appModule = module {
     /**
      * Alert data/model related dependencies
      */
+    viewModel<AlertsViewModel> { AlertsViewModel(get(), get()) }
+
     single<AlertDao> {
         get<TripDatabase>().alertDao
     }
