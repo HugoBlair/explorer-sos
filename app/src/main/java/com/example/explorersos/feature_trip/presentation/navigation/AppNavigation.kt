@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.explorersos.feature_trip.presentation.add_edit_contact.AddEditContactScreen
 import com.example.explorersos.feature_trip.presentation.add_edit_trip.AddEditTripScreen
+import com.example.explorersos.feature_trip.presentation.alerts.AlertsScreen
 import com.example.explorersos.feature_trip.presentation.contacts.ContactsScreen
 import com.example.explorersos.feature_trip.presentation.settings.SettingsScreen
 import com.example.explorersos.feature_trip.presentation.trips.TripsScreen
@@ -48,11 +49,13 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier = Modifie
                 viewModel = koinViewModel(),
             )
         }
-            
-
-
+        
         composable<Routes.SettingsScreenRoute> {
             SettingsScreen()
+        }
+
+        composable<Routes.AlertsScreenRoute> {
+            AlertsScreen(navController = navController, viewModel = koinViewModel())
         }
 
     }
