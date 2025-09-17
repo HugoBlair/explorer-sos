@@ -1,6 +1,7 @@
 package com.example.explorersos.feature_trip.presentation.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAlert
 import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -17,4 +18,8 @@ sealed class BottomNavItem(
 
     data object Settings :
         BottomNavItem(Routes.SettingsScreenRoute, "Settings", Icons.Default.Settings)
+
+    data object Alerts :
+        BottomNavItem(Routes.AlertsScreenRoute, "Alerts", Icons.Default.AddAlert)
+
 }
