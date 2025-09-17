@@ -11,7 +11,7 @@ import com.example.explorersos.feature_trip.domain.util.RoomTypeConverters
 
 @Database(
     entities = [Trip::class, Alert::class, Contact::class, CheckIn::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(RoomTypeConverters::class) // Add this line
