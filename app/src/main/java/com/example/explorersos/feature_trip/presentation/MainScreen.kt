@@ -31,6 +31,7 @@ fun MainScreen() {
             val bottomNavRoutes = listOf(
                 BottomNavItem.Trips.route::class.qualifiedName,
                 BottomNavItem.Contacts.route::class.qualifiedName,
+                BottomNavItem.Alerts.route::class.qualifiedName,
                 BottomNavItem.Settings.route::class.qualifiedName
             )
 
@@ -52,6 +53,7 @@ private fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Trips,
         BottomNavItem.Contacts,
+        BottomNavItem.Alerts,
         BottomNavItem.Settings
     )
 
